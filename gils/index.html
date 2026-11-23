@@ -1,0 +1,1061 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gil's Restaurant · Haz tu pedido</title>
+<meta name="description" content="Pide tus tacos, cortes y kilos de carne asada de Gil's Restaurant, Lerdo. A domicilio o para recoger. Desde 1977.">
+<meta name="theme-color" content="#730f11">
+<link rel="icon" href="img/icono-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="img/icono-180.png">
+<link rel="manifest" href="manifest.json">
+<!-- Vista previa al compartir el link (WhatsApp, Facebook). Las imágenes necesitan la dirección completa. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gil's Restaurant">
+<meta property="og:title" content="Gil's Restaurant · Haz tu pedido">
+<meta property="og:description" content="Tacos, cortes y kilos de carne asada desde 1977. A domicilio o para recoger en Cd. Lerdo.">
+<meta property="og:url" content="https://st24030217-maker.github.io/muestras/gils/">
+<meta property="og:image" content="https://st24030217-maker.github.io/muestras/gils/img/compartir.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preload" href="fonts/Oswald.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+/* Pedidos de Gil's Restaurant · v2
+   Todo en una sola pantalla: el menú siempre a la vista, cada platillo se abre en una hoja desde abajo,
+   y el pedido (con los datos) es otra hoja. Letra grande y botones con texto: fácil para cualquiera. */
+@font-face { font-family: Oswald; src: url(fonts/Oswald.ttf); font-weight: 200 700; font-display: swap; }
+@font-face { font-family: Rye; src: url(fonts/Rye-Regular.ttf); font-display: swap; }
+:root {
+  --rojo: #730f11; --rojo-2: #9b1b1e; --rojo-3: #5a0b0d; --negro: #1c1516; --crema: #f4efe0; --crema-2: #ece5d0; --papel: #faf6ea;
+  --gris: #6b5b50; --linea: #ddd2b8; --verde: #1f8a4c; --verde-2: #18713d; --oro: #c9a45c;
+  --alto: 100vh; /* alto de la pantalla (ver @supports y el script) */
+  --tam: 19px; --target: 48px; --ease: cubic-bezier(.2,.8,.2,1); --rebote: cubic-bezier(.34,1.56,.64,1);
+  --sombra: 0 1px 0 #fff inset, 0 10px 30px -18px #3b1d0e66, 0 2px 6px -2px #3b1d0e1f;
+}
+@supports (height: 100dvh) { :root { --alto: 100dvh; } }
+html { font-size: var(--tam); -webkit-text-size-adjust: 100%; scroll-behavior: smooth; scroll-padding-top: 8.5rem; scroll-padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)); }
+html.grande { --tam: 23px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; color: var(--negro); line-height: 1.4; overflow-wrap: break-word;
+  background: linear-gradient(180deg, #f4efe0ee, #f4efe0f5 40%, #ece5d0f7), url(img/fondo-tabla.jpg) center / cover fixed, var(--crema); }
+img { max-inline-size: 100%; block-size: auto; display: block; }
+h1, h2, h3 { line-height: 1.1; text-wrap: balance; }
+p, li { text-wrap: pretty; }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:where(button, a.boton, input, textarea) { min-block-size: var(--target); }
+:focus-visible { outline: 3px solid var(--rojo-2); outline-offset: 3px; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+[hidden] { display: none !important; }
+
+/* ---------- Barra de arriba ---------- */
+.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--papel) 88%, transparent); backdrop-filter: blur(12px) saturate(1.2); -webkit-backdrop-filter: blur(12px) saturate(1.2);
+  border-bottom: 1px solid #0000000f; padding: max(8px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px)); }
+.top-fila { display: flex; align-items: center; gap: 8px; max-width: 44rem; margin: 0 auto; }
+.top-logo { width: min(8.4rem, 34vw); transition: width .3s var(--ease); }
+.top.compacto .top-logo { width: min(6.4rem, 28vw); }
+.top-acc { margin-left: auto; display: flex; gap: 6px; flex-shrink: 0; }
+.chico { display: inline-flex; align-items: center; gap: 6px; border: 2px solid var(--rojo); background: #fff; color: var(--rojo); border-radius: 999px; padding: 4px 14px; font-weight: 800; font-size: 16px; min-block-size: 44px; text-decoration: none; }
+.chico[aria-pressed="true"] { background: var(--rojo); color: #fff; }
+.chico svg { width: 18px; height: 18px; }
+
+/* Categorías: barra que sigue al scroll y marca la sección en la que vas */
+.cats { display: flex; gap: 8px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; max-width: 44rem; margin: 8px auto 0; padding: 2px 2px 10px; }
+.cats::-webkit-scrollbar { display: none; }
+.cats a { flex: none; scroll-snap-align: start; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px; background: #fff; border: 1.5px solid var(--linea);
+  color: var(--negro); text-decoration: none; font-weight: 700; font-size: 15px; min-block-size: 44px; transition: background .25s, color .25s, border-color .25s, transform .2s var(--ease); }
+.cats a img { width: 32px; height: 32px; border-radius: 999px; }
+.cats a[aria-current="true"] { background: var(--rojo); color: #fff; border-color: var(--rojo); transform: translateY(-1px); }
+.cats-sombra { position: relative; }
+
+main { max-width: 44rem; margin: 0 auto; padding: 0 16px calc(7rem + env(safe-area-inset-bottom, 0px)); }
+
+/* ---------- Portada ---------- */
+.hero { position: relative; margin: 14px 0 6px; border-radius: 28px; overflow: hidden; color: #fff; padding: 26px 22px 22px;
+  background: linear-gradient(180deg, #1c151640 0%, #1c151614 30%, #5a0b0dcc 62%, #3d0709f7 82%, #3d0709 100%), url(img/fondo-portada.jpg) center 35% / cover, var(--rojo); min-height: 30rem; display: flex; flex-direction: column; justify-content: flex-end;
+  box-shadow: 0 24px 50px -30px #5a0b0d; isolation: isolate; }
+.hero::before { display: none; content: ""; position: absolute; inset: 0; z-index: -1; opacity: .08;
+  background-image: repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 14px), repeating-linear-gradient(-45deg, #fff 0 1px, transparent 1px 14px); mask-image: linear-gradient(180deg, #000, transparent 70%); }
+.hero .sello { position: absolute; right: -28px; top: -22px; width: 150px; opacity: .2; transform: rotate(12deg); filter: brightness(0) invert(1); }
+.hero .est { font-family: Oswald, sans-serif; letter-spacing: .3em; font-size: .8rem; opacity: .85; }
+.hero h1 { font-family: Rye, Georgia, serif; font-weight: 400; font-size: clamp(2.6rem, 13vw, 3.8rem); letter-spacing: .02em; margin: 4px 0 2px; text-shadow: 0 3px 0 #3d0709; }
+.hero .lema { font-family: Oswald, sans-serif; font-size: 1.15rem; letter-spacing: .04em; opacity: .95; }
+.estrellas { margin: 14px 0 18px; display: flex; gap: 8px; flex-wrap: wrap; }
+.estrellas span svg { width: 16px; height: 16px; }
+.estrellas span { display: inline-flex; align-items: center; gap: 6px; background: #ffffff1f; border: 1px solid #ffffff33; border-radius: 999px; padding: 5px 12px; font-size: .82rem; font-weight: 700; }
+
+/* A domicilio / Para recoger */
+.entrega { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: #00000033; padding: 6px; border-radius: 20px; }
+.entrega button { display: flex; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 15px; background: transparent; color: #fff; padding: 10px 8px; font-weight: 800; font-size: 1rem; line-height: 1.1;
+  transition: background .3s var(--ease), color .3s var(--ease), transform .15s; }
+.entrega button img { width: 38px; height: 34px; object-fit: contain; border-radius: 8px; }
+.entrega button[aria-pressed="true"] { background: #fff; color: var(--rojo); box-shadow: 0 6px 16px -8px #000; }
+.entrega button:active { transform: scale(.97); }
+.donde { margin-top: 12px; display: flex; align-items: center; gap: 10px; font-size: .92rem; }
+.donde svg { flex: none; width: 22px; height: 22px; }
+.donde button { margin-left: auto; flex: none; border: 1.5px solid #ffffff80; background: transparent; color: #fff; border-radius: 999px; padding: 4px 14px; font-weight: 700; font-size: .9rem; min-block-size: 40px; }
+
+/* ---------- Menú ---------- */
+section.cat { padding-top: 22px; }
+.cat-cab { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.cat-cab img { width: 48px; height: 44px; object-fit: contain; border-radius: 12px; box-shadow: var(--sombra); }
+.cat-cab h2 { font-family: Rye, Georgia, serif; font-weight: 400; color: var(--rojo); font-size: min(1.55rem, 7.6vw); letter-spacing: .02em; min-width: 0; overflow-wrap: anywhere; }
+.orn { display: flex; align-items: center; gap: 10px; color: var(--oro); font-size: .8rem; margin: 6px 0 4px; }
+.orn::before, .orn::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--oro), transparent); }
+.nota { color: var(--gris); font-size: .9rem; margin: 2px 0 6px; }
+.items { display: grid; gap: 10px; margin-top: 8px; }
+@media (min-width: 640px) { .items { grid-template-columns: 1fr 1fr; } }
+.item { position: relative; display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; align-items: center; text-align: left; width: 100%;
+  background: #fff; border: 1.5px solid transparent; border-radius: 20px; padding: 14px 14px 14px 16px; box-shadow: var(--sombra); transition: transform .2s var(--ease), border-color .25s, box-shadow .25s; }
+.item:active { transform: scale(.985); }
+.item.lleva { border-color: var(--verde); }
+.item h3 { font-size: 1.05rem; font-weight: 800; }
+.item .desc { grid-column: 1; color: var(--gris); font-size: .88rem; }
+.item .precio { grid-column: 1; font-family: Oswald, sans-serif; font-weight: 600; font-size: 1.2rem; color: var(--rojo); }
+.item .mas { grid-row: 1 / span 3; grid-column: 2; width: 52px; height: 52px; border-radius: 16px; border: 0; background: var(--rojo); color: #fff; display: grid; place-items: center; box-shadow: 0 8px 18px -10px var(--rojo); }
+.item .mas svg { width: 26px; height: 26px; }
+.item .badge { position: absolute; top: -8px; right: 10px; background: var(--verde); color: #fff; font-weight: 900; font-size: .8rem; border-radius: 999px; padding: 2px 10px; box-shadow: 0 4px 10px -4px #000; }
+.op-tag { display: inline-block; margin-left: 6px; font-size: .72rem; font-weight: 800; color: var(--gris); background: var(--crema); border-radius: 6px; padding: 1px 6px; vertical-align: 2px; }
+
+/* ---------- Barra del pedido (flota abajo) ---------- */
+.bolsa { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; padding: 10px max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px));
+  transform: translateY(120%); transition: transform .45s var(--rebote); pointer-events: none; }
+.bolsa.ve { transform: none; pointer-events: auto; }
+.bolsa button { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 44rem; margin: 0 auto; border: 0; border-radius: 22px; padding: 12px 18px; background: var(--negro); color: #fff;
+  font-weight: 800; font-size: 1.08rem; box-shadow: 0 18px 40px -14px #000; }
+.bolsa .n { display: grid; place-items: center; min-width: 34px; height: 34px; border-radius: 12px; background: var(--rojo); font-size: 1rem; }
+.bolsa .t { margin-left: auto; font-family: Oswald, sans-serif; font-size: 1.25rem; font-weight: 600; }
+.pum { animation: pum .45s var(--rebote); }
+@keyframes pum { 40% { transform: scale(1.18); } }
+
+/* ---------- Hojas (desde abajo) ---------- */
+dialog.hoja { position: fixed; inset: auto 0 0 0; margin: 0 auto; width: 100%; max-width: 44rem; max-height: min(calc(var(--alto) * 92 / 100), 900px); border: 0; padding: 0; border-radius: 28px 28px 0 0;
+  background: var(--papel); color: var(--negro); box-shadow: 0 -20px 60px -20px #000; overflow: hidden; display: flex; flex-direction: column;
+  transform: translateY(100%); transition: transform .42s var(--ease), overlay .42s allow-discrete, display .42s allow-discrete; }
+dialog.hoja[open] { transform: none; }
+@starting-style { dialog.hoja[open] { transform: translateY(100%); } }
+dialog.hoja:not([open]) { display: none; }
+dialog.hoja::backdrop { background: #1c151600; transition: background .4s, overlay .4s allow-discrete, display .4s allow-discrete; }
+dialog.hoja[open]::backdrop { background: #1c1516a6; }
+@starting-style { dialog.hoja[open]::backdrop { background: #1c151600; } }
+.agarre { width: 44px; height: 5px; border-radius: 9px; background: #00000026; margin: 10px auto 0; flex: none; }
+.hoja-cab { display: flex; align-items: center; gap: 10px; padding: 10px 18px 6px; flex: none; }
+.hoja-cab h2 { font-family: Oswald, sans-serif; font-size: 1.5rem; font-weight: 700; }
+.cerrar { margin-left: auto; width: 44px; height: 44px; border-radius: 14px; border: 0; background: #0000000d; display: grid; place-items: center; flex: none; }
+.cerrar svg { width: 22px; height: 22px; }
+.atras { width: 44px; height: 44px; border-radius: 14px; border: 0; background: #0000000d; display: grid; place-items: center; flex: none; }
+.atras svg { width: 22px; height: 22px; }
+.hoja-cuerpo { overflow-y: auto; overscroll-behavior: contain; padding: 6px 18px 18px; flex: 1; }
+.hoja-pie { flex: none; padding: 12px 18px max(14px, env(safe-area-inset-bottom, 0px)); border-top: 1px solid #0000000f; background: var(--papel); }
+
+/* Hoja de un platillo */
+.pl-ico { width: 64px; height: 58px; object-fit: contain; border-radius: 16px; box-shadow: var(--sombra); }
+.pl-nom { font-family: Oswald, sans-serif; font-size: 1.6rem; font-weight: 700; margin-top: 10px; }
+.pl-desc { color: var(--gris); margin-top: 2px; }
+.pl-precio { font-family: Oswald, sans-serif; font-size: 1.4rem; color: var(--rojo); font-weight: 600; margin-top: 4px; }
+.grupo { margin-top: 18px; }
+.grupo-t { font-weight: 800; margin-bottom: 8px; }
+.opciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.opciones button { border: 2px solid var(--linea); background: #fff; border-radius: 16px; padding: 8px 18px; font-weight: 800; font-size: 1rem; transition: background .2s, color .2s, border-color .2s; }
+.opciones button[aria-pressed="true"] { border-color: var(--rojo); background: var(--rojo); color: #fff; }
+.stepper { display: grid; grid-template-columns: 56px 1fr 56px; align-items: center; gap: 10px; background: #fff; border-radius: 18px; padding: 6px; box-shadow: var(--sombra); max-width: 18rem; }
+.stepper button { height: 52px; border: 0; border-radius: 14px; background: var(--crema); color: var(--rojo); font-size: 1.7rem; font-weight: 900; line-height: 1; }
+.stepper output { text-align: center; font-family: Oswald, sans-serif; font-size: 1.5rem; font-weight: 600; }
+
+.boton { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border: 0; border-radius: 18px; padding: 14px 18px; font-weight: 800; font-size: 1.12rem; text-decoration: none; text-align: center; transition: transform .15s, filter .2s; }
+.boton:active { transform: scale(.98); }
+.boton svg { width: 22px; height: 22px; flex: none; }
+.primario { background: var(--rojo); color: #fff; box-shadow: 0 12px 26px -14px var(--rojo); }
+.wa { background: var(--verde); color: #fff; box-shadow: 0 12px 26px -14px var(--verde); }
+.secundario { background: #fff; color: var(--rojo); border: 2px solid var(--rojo); }
+.boton .der { margin-left: auto; font-family: Oswald, sans-serif; font-weight: 600; }
+
+/* Hoja del pedido: pasos dentro de la misma hoja */
+.pasos { display: flex; gap: 6px; padding: 0 18px 8px; flex: none; }
+.pasos i { flex: 1; height: 4px; border-radius: 4px; background: #0000001a; overflow: hidden; }
+.pasos i b { display: block; height: 100%; background: var(--rojo); transform: scaleX(0); transform-origin: left; transition: transform .4s var(--ease); }
+.pasos i.ya b { transform: none; }
+.vista { animation: entra .35s var(--ease); }
+@keyframes entra { from { opacity: 0; transform: translateX(18px); } }
+.linea { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; background: #fff; border-radius: 18px; padding: 12px 14px; margin-top: 10px; box-shadow: var(--sombra); }
+.linea .nom { font-weight: 800; }
+.linea .sub { color: var(--gris); font-size: .88rem; }
+.linea .imp { grid-row: 1; grid-column: 2; font-family: Oswald, sans-serif; font-weight: 600; font-size: 1.15rem; color: var(--rojo); }
+.linea .stepper { grid-column: 1 / -1; margin-top: 6px; box-shadow: none; background: var(--crema); padding: 4px; max-width: 14rem; grid-template-columns: 48px 1fr 48px; }
+.linea .stepper button { height: 44px; background: #fff; font-size: 1.4rem; }
+.linea .stepper output { font-size: 1.2rem; }
+.resumen { display: flex; justify-content: space-between; align-items: baseline; margin-top: 16px; padding-top: 12px; border-top: 2px dashed var(--linea); }
+.resumen b { font-family: Oswald, sans-serif; font-size: 1.7rem; font-weight: 700; }
+.ayuda { color: var(--gris); font-size: .9rem; margin-top: 4px; }
+.vacio { text-align: center; padding: 2rem 0; color: var(--gris); }
+.vacio img { width: 90px; margin: 0 auto 10px; opacity: .8; }
+
+form { display: grid; gap: 14px; }
+label, legend { font-weight: 800; font-size: 1rem; }
+label small, legend small { display: block; font-weight: 500; color: var(--gris); font-size: .85rem; }
+input, textarea { width: 100%; margin-top: 6px; border: 2px solid #cfc3a6; border-radius: 16px; padding: 10px 14px; background: #fff; font-size: 1.05rem; transition: border-color .2s, box-shadow .2s; }
+input:focus, textarea:focus { outline: none; border-color: var(--rojo); box-shadow: 0 0 0 4px #730f1122; }
+textarea { min-block-size: 5rem; resize: vertical; }
+fieldset { border: 0; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 6px; background: #fff; padding: 5px; border-radius: 18px; box-shadow: var(--sombra); }
+.seg label { display: flex; align-items: center; justify-content: center; text-align: center; border-radius: 13px; padding: 6px; font-size: .95rem; min-block-size: 46px; transition: background .25s, color .25s; }
+.seg input { position: absolute; opacity: 0; width: 1px; height: 1px; min-block-size: 0; margin: 0; }
+.seg label:has(input:checked) { background: var(--rojo); color: #fff; }
+.seg label:has(input:focus-visible) { outline: 3px solid var(--rojo-2); outline-offset: 2px; }
+.ubic-ok { color: var(--verde-2); font-weight: 800; }
+.aviso { background: #fff7e0; border: 2px solid #e8c36a; border-radius: 14px; padding: 10px 14px; font-size: .95rem; }
+.entrega-chip { display: inline-flex; align-items: center; gap: 8px; background: var(--crema); border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: .9rem; }
+.entrega-chip button { border: 0; background: none; color: var(--rojo); font-weight: 800; text-decoration: underline; min-block-size: 32px; padding: 0 4px; }
+
+/* Mapa */
+.mapa { border-radius: 18px; overflow: hidden; aspect-ratio: 4 / 3; background: var(--crema-2); box-shadow: var(--sombra); }
+.mapa iframe { width: 100%; height: 100%; border: 0; display: block; }
+.dir { font-family: Oswald, sans-serif; font-size: 1.35rem; font-weight: 600; margin-top: 12px; }
+.fila2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+
+/* Mapa 3D de "Cómo llegar" y navegación */
+dialog.hoja-mapa { max-height: calc(var(--alto) * 94 / 100); }
+.mapa3d { position: relative; height: min(calc(var(--alto) * 56 / 100), 520px); border-radius: 20px; overflow: hidden; background: #e8e2d0; box-shadow: var(--sombra); transition: height .35s var(--ease); }
+.navegando .mapa3d { height: min(calc(var(--alto) * 72 / 100), 680px); }
+.navegando .dir { display: none; }
+.mapa-cargando { position: absolute; inset: 0; display: grid; place-items: center; color: var(--gris); font-weight: 700; }
+.ruta-info, .nav-pie { display: flex; align-items: center; gap: 18px; margin-top: 12px; background: #fff; border-radius: 18px; padding: 10px 14px; box-shadow: var(--sombra); }
+.ruta-info div, .nav-pie div { display: grid; }
+.ruta-info b, .nav-pie b { font-family: Oswald, sans-serif; font-size: 1.5rem; color: var(--rojo); line-height: 1; }
+.ruta-info span, .nav-pie div span { color: var(--gris); font-size: .82rem; }
+.ruta-info .chico { margin-left: auto; font-size: 14px; }
+.nav-pie { gap: 14px; }
+.nav-pie #btnVoz { margin-left: auto; font-size: 14px; padding: 4px 12px; }
+.nav-pie #btnVoz[aria-pressed="false"] { opacity: .6; }
+.chico.rojo { background: var(--rojo); color: #fff; font-size: 14px; padding: 4px 12px; }
+.guia { position: absolute; z-index: 3; left: 10px; right: 58px; top: 10px; display: flex; align-items: center; gap: 12px; background: var(--rojo); color: #fff; border-radius: 18px; padding: 12px 14px; box-shadow: 0 12px 30px -10px #000a; }
+.guia b { font-family: Oswald, sans-serif; font-size: 1.55rem; line-height: 1; display: block; }
+.guia p { font-weight: 700; font-size: 1.02rem; line-height: 1.2; margin-top: 3px; }
+.guia-flecha { flex: none; width: 46px; height: 46px; background: #ffffff26; border-radius: 12px; padding: 6px; transition: transform .4s var(--ease); }
+.guia-flecha.meta { background: #fff; color: var(--rojo); }
+.guia.llegaste { background: var(--verde); }
+.pin-gils { display: grid; justify-items: center; gap: 2px; filter: drop-shadow(0 6px 10px #0006); }
+.pin-gils img { width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--rojo); background: #fff; }
+.pin-gils span { background: var(--rojo); color: #fff; font-family: Rye, Georgia, serif; font-size: 14px; padding: 2px 10px; border-radius: 999px; }
+.pin-tu { display: grid; justify-items: center; gap: 2px; }
+.pin-tu i { width: 22px; height: 22px; border-radius: 50%; background: #1a73e8; border: 3px solid #fff; box-shadow: 0 0 0 7px #1a73e833; }
+.pin-tu span { background: #fff; color: #1a73e8; font-weight: 800; font-size: 13px; padding: 1px 8px; border-radius: 999px; box-shadow: 0 2px 6px #0003; }
+#btnGoogle { color: var(--rojo); font-weight: 700; }
+
+/* ---------- Mapa en pantalla completa (al trazar la ruta y al navegar) ---------- */
+.cerrar-flota { display: none; position: absolute; z-index: 5; left: max(12px, env(safe-area-inset-left, 0px)); top: max(12px, env(safe-area-inset-top, 0px)); width: 48px; height: 48px; border-radius: 16px; border: 0; background: #fff; color: var(--negro); box-shadow: 0 8px 20px -8px #000a; place-items: center; }
+.cerrar-flota svg { width: 22px; height: 22px; }
+dialog.hoja-mapa.completo { position: fixed; inset: 0; top: 0; bottom: auto; margin: 0; width: 100%; max-width: none; height: var(--alto); max-height: var(--alto); border-radius: 0; }
+.completo .agarre, .completo .hoja-cab { display: none; }
+.completo .hoja-cuerpo { position: relative; padding: 0; overflow: hidden; flex: 1; }
+.completo .mapa3d { position: absolute; inset: 0; height: auto; border-radius: 0; box-shadow: none; }
+.completo .cerrar-flota { display: grid; }
+.completo .guia { left: 72px; top: max(12px, env(safe-area-inset-top, 0px)); }
+.completo .maplibregl-ctrl-top-right { top: max(0px, env(safe-area-inset-top, 0px)); }
+.completo .panel-mapa { position: absolute; z-index: 4; left: max(12px, env(safe-area-inset-left, 0px)); right: max(12px, env(safe-area-inset-right, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  max-width: 34rem; margin: 0 auto; background: var(--papel); border-radius: 24px; padding: 14px 16px; box-shadow: 0 24px 60px -20px #000c; animation: sube-panel .45s var(--rebote); }
+.completo .panel-mapa .dir { font-size: 1.1rem; margin-top: 10px; }
+.completo .panel-mapa .ruta-info, .completo .panel-mapa .nav-pie { margin-top: 0; box-shadow: none; padding: 4px 2px; background: transparent; }
+.completo.navegando .panel-mapa .dir, .completo.navegando #rutaMsg { display: none; }
+@keyframes sube-panel { from { transform: translateY(40px); opacity: 0; } }
+
+/* ---------- Diseño responsivo: tablet y computadora ---------- */
+@media (min-width: 900px) {
+  .top-fila, .cats, main { max-width: 72rem; }
+  main { padding-left: 24px; padding-right: 24px; }
+  .hero { min-height: 26rem; padding: 40px 44px 34px; background-position: center 40%; }
+  .hero > * { max-width: 34rem; }
+  .hero h1 { font-size: 4.6rem; }
+  .items { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  section.cat { padding-top: 30px; }
+  /* El pedido: botón flotante en la esquina */
+  .bolsa { left: auto; right: max(24px, env(safe-area-inset-right, 0px)); bottom: 24px; padding: 0; width: 26rem; }
+  /* Hojas: el platillo al centro; el pedido como panel a la derecha */
+  dialog.hoja { transition: transform .4s var(--ease), opacity .3s, overlay .4s allow-discrete, display .4s allow-discrete; }
+  dialog#hojaPlato { inset: 0; margin: auto; width: 30rem; max-height: min(calc(var(--alto) * 86 / 100), 760px); border-radius: 28px; transform: scale(.94); opacity: 0; }
+  dialog#hojaPlato[open] { transform: none; opacity: 1; }
+  @starting-style { dialog#hojaPlato[open] { transform: scale(.94); opacity: 0; } }
+  dialog#hojaPedido { inset: 0 0 0 auto; margin: 0; width: 30rem; height: var(--alto); max-height: var(--alto); border-radius: 28px 0 0 28px; transform: translateX(100%); }
+  dialog#hojaPedido[open] { transform: none; }
+  @starting-style { dialog#hojaPedido[open] { transform: translateX(100%); } }
+  dialog.hoja-mapa:not(.completo) { inset: 0; margin: auto; width: min(64rem, 92vw); max-width: none; max-height: calc(var(--alto) * 88 / 100); border-radius: 28px; transform: scale(.96); opacity: 0; }
+  dialog.hoja-mapa:not(.completo)[open] { transform: none; opacity: 1; }
+  @starting-style { dialog.hoja-mapa:not(.completo)[open] { transform: scale(.96); opacity: 0; } }
+  dialog.hoja-mapa:not(.completo) .mapa3d { height: min(calc(var(--alto) * 58 / 100), 560px); }
+  .agarre { display: none; }
+  .toast { bottom: 110px; }
+}
+@media (min-width: 1200px) {
+  .items { grid-template-columns: repeat(3, 1fr); }
+  .hero { min-height: 30rem; }
+}
+
+/* Aviso flotante */
+.toast { position: fixed; left: 50%; bottom: calc(6.2rem + env(safe-area-inset-bottom, 0px)); z-index: 40; transform: translate(-50%, 20px); opacity: 0; pointer-events: none;
+  background: var(--negro); color: #fff; border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: .95rem; display: flex; align-items: center; gap: 8px; transition: opacity .25s, transform .35s var(--rebote); box-shadow: 0 10px 30px -10px #000; max-width: calc(100% - 32px); }
+.toast.ve { opacity: 1; transform: translate(-50%, 0); }
+.toast svg { width: 20px; height: 20px; color: #6fe3a0; flex: none; }
+
+.pie { text-align: center; color: var(--gris); font-size: .85rem; margin-top: 2.5rem; }
+.pie b { font-family: Rye, Georgia, serif; font-weight: 400; color: var(--rojo); font-size: 1.1rem; display: block; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-mas" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></symbol>
+  <symbol id="i-atras" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-tel" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="9" r="2.5" fill="currentColor"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.7 14.9L2 22l5.3-1.4A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></symbol>
+  <symbol id="i-fuego" viewBox="0 0 24 24"><path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3 0-3-1-5 1-8.5z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-moto" viewBox="0 0 24 24"><circle cx="6" cy="17" r="3" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="18" cy="17" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M9 17h6l3-7h-4M5 9h5l2 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-voz" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-nav" viewBox="0 0 24 24"><path d="M12 2l8 19-8-4-8 4z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="i-bolsa" viewBox="0 0 24 24"><path d="M6 8h12l-1 12H7L6 8zM9 8V6a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="2" stroke-linejoin="round" fill="none"/></symbol>
+</svg>
+
+<header class="top" id="top">
+  <div class="top-fila">
+    <img class="top-logo" src="img/logo.png" alt="Gil's Restaurant, desde 1977" width="760" height="352">
+    <div class="top-acc">
+      <button class="chico" id="btnLetra" type="button" aria-pressed="false" aria-label="Letra más grande">A+</button>
+      <a class="chico" href="tel:+528717151541"><svg aria-hidden="true"><use href="#i-tel"/></svg>Llamar</a>
+    </div>
+  </div>
+  <nav class="cats" id="cats" aria-label="Secciones del menú"></nav>
+</header>
+
+<main>
+  <section class="hero" aria-labelledby="titulo">
+
+    <p class="est">— EST. 1977 —</p>
+    <h1 id="titulo">Gil's</h1>
+    <p class="lema">Al carbón, como en el viejo oeste</p>
+    <div class="estrellas"><span><svg aria-hidden="true"><use href="#i-fuego"/></svg>Carne asada al carbón</span><span><svg aria-hidden="true"><use href="#i-moto"/></svg>Servicio a domicilio</span></div>
+    <div class="entrega" role="group" aria-label="¿Cómo quieres tu pedido?">
+      <button type="button" data-entrega="domicilio" aria-pressed="true"><img src="img/i-moto.png" alt="" width="120" height="100">A domicilio</button>
+      <button type="button" data-entrega="recoger" aria-pressed="false"><img src="img/i-bolsa.png" alt="" width="120" height="122">Paso a recoger</button>
+    </div>
+    <div class="donde"><svg aria-hidden="true"><use href="#i-pin"/></svg><span id="dondeTxt">Te lo llevamos a tu casa</span><button type="button" id="btnMapa">Cómo llegar</button></div>
+  </section>
+
+  <div id="menu"></div>
+
+  <p class="pie"><b>Gil's Restaurant</b>Desde 1977 · Calle Centenario 277, Zona Centro, Cd. Lerdo, Dgo.<br>Pedidos: 871 715 1541</p>
+</main>
+
+<div class="bolsa" id="bolsa"><button type="button" id="btnBolsa"><span class="n" id="bolsaN">0</span>Ver mi pedido<span class="t" id="bolsaT">$0</span></button></div>
+<div class="toast" id="toast" role="status" aria-live="polite"><svg aria-hidden="true"><use href="#i-ok"/></svg><span id="toastTxt"></span></div>
+
+<!-- Hoja: un platillo -->
+<dialog class="hoja" id="hojaPlato" aria-labelledby="plNom" closedby="any">
+  <div class="agarre" aria-hidden="true"></div>
+  <div class="hoja-cab"><img class="pl-ico" id="plIco" src="" alt="" width="120" height="100"><button class="cerrar" type="button" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></div>
+  <div class="hoja-cuerpo">
+    <h2 class="pl-nom" id="plNom"></h2>
+    <p class="pl-desc" id="plDesc"></p>
+    <p class="pl-precio" id="plPrecio"></p>
+    <div class="grupo" id="plOpGrupo"><p class="grupo-t" id="plOpT">Tortilla</p><div class="opciones" id="plOps" role="group" aria-labelledby="plOpT"></div></div>
+    <div class="grupo"><p class="grupo-t" id="plCantT">¿Cuántos?</p>
+      <div class="stepper" role="group" aria-labelledby="plCantT"><button type="button" id="plMenos" aria-label="Uno menos">−</button><output id="plCant" aria-live="polite">1</output><button type="button" id="plMas" aria-label="Uno más">+</button></div></div>
+  </div>
+  <div class="hoja-pie"><button class="boton primario" type="button" id="plAgregar"><svg aria-hidden="true"><use href="#i-mas"/></svg>Agregar<span class="der" id="plTotal">$0</span></button></div>
+</dialog>
+
+<!-- Hoja: el pedido (paso 1: revisar · paso 2: datos) -->
+<dialog class="hoja" id="hojaPedido" aria-labelledby="pedT" closedby="any">
+  <div class="agarre" aria-hidden="true"></div>
+  <div class="hoja-cab"><button class="atras" type="button" id="pedAtras" aria-label="Regresar" hidden><svg><use href="#i-atras"/></svg></button><h2 id="pedT">Tu pedido</h2><button class="cerrar" type="button" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></div>
+  <div class="pasos" aria-hidden="true"><i class="ya"><b></b></i><i id="paso2bar"><b></b></i></div>
+  <div class="hoja-cuerpo" id="pedCuerpo">
+    <div id="vistaLista" class="vista">
+      <div id="lineas"></div>
+      <div class="resumen"><span>Total</span><b id="total">$0</b></div>
+      <p class="ayuda" id="notaEnvio"></p>
+    </div>
+    <div id="vistaDatos" class="vista" hidden>
+      <p class="entrega-chip" id="entregaChip"></p>
+      <form id="datos" novalidate style="margin-top:14px">
+        <div><label for="nombre">Tu nombre</label><input id="nombre" name="nombre" type="text" autocomplete="name" required></div>
+        <div><label for="tel">Tu teléfono <small>Por si necesitamos llamarte</small></label><input id="tel" name="tel" type="tel" inputmode="tel" autocomplete="tel" required></div>
+        <div class="solo-domicilio"><label for="direccion">Tu dirección <small>Calle, número y colonia</small></label><textarea id="direccion" name="direccion" autocomplete="street-address" required></textarea></div>
+        <div class="solo-domicilio"><label for="referencia">¿Cómo es tu casa? <small>Ej.: portón negro, junto a la tienda</small></label><input id="referencia" name="referencia" type="text" autocomplete="off"></div>
+        <div class="solo-domicilio"><button class="boton secundario" type="button" id="btnUbicacion"><svg aria-hidden="true"><use href="#i-pin"/></svg>Mandar mi ubicación exacta</button><p class="ayuda" id="ubicacionTxt" aria-live="polite">Así el repartidor llega directo, sin perderse.</p></div>
+        <fieldset><legend>¿Cómo vas a pagar?</legend>
+          <div class="seg"><label><input type="radio" name="pago" value="Efectivo" checked>Efectivo</label><label><input type="radio" name="pago" value="Tarjeta">Tarjeta</label><label><input type="radio" name="pago" value="Transferencia">Transferencia</label></div></fieldset>
+        <div id="cambioCaja"><label for="cambio">¿Con cuánto pagas? <small>Para llevarte el cambio (opcional)</small></label><input id="cambio" name="cambio" type="text" inputmode="numeric" autocomplete="off" placeholder="Ej.: 500"></div>
+        <div><label for="notas">¿Algo más? <small>Ej.: sin cebolla, salsa aparte (opcional)</small></label><textarea id="notas" name="notas" autocomplete="off"></textarea></div>
+        <p class="aviso" id="faltan" hidden role="alert"></p>
+      </form>
+    </div>
+  </div>
+  <div class="hoja-pie">
+    <button class="boton primario" type="button" id="pedSiguiente">Continuar<span class="der" id="pedSigTotal">$0</span></button>
+    <button class="boton wa" type="submit" form="datos" id="pedEnviar" hidden><svg aria-hidden="true"><use href="#i-wa"/></svg>Enviar pedido por WhatsApp</button>
+    <p class="ayuda" id="pedAyuda" hidden style="text-align:center">Se abre WhatsApp con tu pedido ya escrito. Solo toca <b>Enviar</b>.</p>
+  </div>
+</dialog>
+
+<!-- Hoja: dónde estamos -->
+<dialog class="hoja hoja-mapa" id="hojaMapa" aria-labelledby="mapaT" closedby="any">
+  <div class="agarre" aria-hidden="true"></div>
+  <div class="hoja-cab"><h2 id="mapaT">Cómo llegar</h2><button class="cerrar" type="button" data-cerrar aria-label="Cerrar"><svg><use href="#i-x"/></svg></button></div>
+  <div class="hoja-cuerpo">
+    <div class="mapa3d" id="mapa3d" role="region" aria-label="Mapa en 3D con la ruta a Gil's">
+      <p class="mapa-cargando" id="mapaCargando">Cargando el mapa…</p>
+      <button class="cerrar-flota" type="button" data-cerrar aria-label="Cerrar el mapa"><svg><use href="#i-x"/></svg></button>
+      <div class="guia" id="guia" hidden role="status" aria-live="polite">
+        <svg class="guia-flecha" id="guiaFlecha" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 8h-4.5v10h-5V11H5z" fill="currentColor"/></svg>
+        <div><b id="guiaDist"></b><p id="guiaTxt"></p></div>
+      </div>
+    </div>
+    <div class="panel-mapa" id="panelMapa">
+      <div class="nav-pie" id="navPie" hidden>
+        <div><b id="navFalta"></b><span>faltan</span></div><div><b id="navMin"></b><span>llegas en</span></div>
+        <button type="button" class="chico" id="btnVoz" aria-pressed="true"><svg aria-hidden="true"><use href="#i-voz"/></svg><span>Voz</span></button>
+        <button type="button" class="chico rojo" id="btnTerminar">Terminar</button>
+      </div>
+      <div class="ruta-info" id="rutaInfo" hidden><div><b id="rutaKm"></b><span>distancia</span></div><div><b id="rutaMin"></b><span>en carro</span></div><button type="button" id="btnRecorrer" class="chico">Ver recorrido</button></div>
+      <p class="dir">Calle Centenario 277, Zona Centro</p>
+      <p class="ayuda" id="rutaMsg">Cd. Lerdo, Durango. Toca el botón para ver la ruta desde donde estás.</p>
+      <div id="filaMapa" style="margin-top:12px">
+        <button class="boton primario" type="button" id="btnRuta"><svg aria-hidden="true"><use href="#i-pin"/></svg>Trazar mi ruta</button>
+        <button class="boton wa" type="button" id="btnIr" hidden><svg aria-hidden="true"><use href="#i-nav"/></svg>Empezar: te guiamos hasta la puerta</button>
+        <p class="ayuda" style="text-align:center;margin-top:10px">¿Prefieres otra app? <a id="btnGoogle" href="https://www.google.com/maps/dir/?api=1&amp;destination=25.56815035,-103.49836433" target="_blank" rel="noopener">Abrir en Google Maps</a></p>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script>
+// Navegadores que no entienden "dvh" (Chrome viejo, Samsung Internet viejo): la altura real de la
+// pantalla sin la barra del navegador, para que las hojas y el mapa no salgan cortados.
+if (!(window.CSS && CSS.supports("height", "100dvh"))) {
+  const alto = () => document.documentElement.style.setProperty("--alto", innerHeight + "px");
+  alto();
+  addEventListener("resize", alto);
+}
+// ===== Datos del restaurante =====
+const WHATSAPP = "528717151541"; // a donde llegan los pedidos
+const SUCURSAL = "Gil's Restaurant · Calle Centenario 277, Zona Centro, Lerdo";
+
+// ===== Menú (precios del menú impreso) =====
+const TORTILLA = ["Maíz", "Harina"];
+const MENU = [
+  { id: "tacos", nombre: "Tacos", icono: "i-taco", nota: "Tortilla de maíz o harina. La orden mixta se cobra como media orden cada una.", items: [
+    { n: "Orden de tacos de bistec (4)", p: 140, op: TORTILLA },
+    { n: "Orden de tacos de arrachera (4)", p: 180, op: TORTILLA },
+    { n: "Orden de tacos de top sirloin (4)", p: 160, op: TORTILLA },
+    { n: "Media orden de bistec (2)", p: 95, op: TORTILLA },
+    { n: "Media orden de arrachera (2)", p: 110, op: TORTILLA },
+    { n: "Media orden de sirloin (2)", p: 100, op: TORTILLA },
+  ]},
+  { id: "kilos", nombre: "Kilos para llevar", icono: "i-kg", nota: "Cada kilo incluye ½ litro de frijoles charros, 20 tortillas, salsas, cebollas asadas y 1 refresco de 2 litros.", items: [
+    { n: "Kilo de arrachera", p: 540 }, { n: "Kilo de bistec", p: 450 }, { n: "Kilo de sirloin", p: 495 }, { n: "Kilo de costilla", p: 480 },
+  ]},
+  { id: "medios", nombre: "Medios kilos para llevar", icono: "i-bolsa", nota: "Incluye 2 porciones de frijoles charros, 10 tortillas, salsas y cebollas asadas.", items: [
+    { n: "Medio kilo de arrachera", p: 350 }, { n: "Medio kilo de bistec", p: 320 }, { n: "Medio kilo de sirloin", p: 335 }, { n: "Medio kilo de costilla", p: 345 },
+  ]},
+  { id: "cortes", nombre: "Cortes", icono: "i-corte", nota: "Todos de 300 g, con frijoles charros, ensalada, ½ pieza de quesadilla y cebolla asada.", items: [
+    { n: "Club steak", p: 288 }, { n: "T-Bone", p: 298 }, { n: "Arrachera", p: 320 }, { n: "Rib-Eye", p: 345 }, { n: "Costillas short rib", p: 270 },
+  ]},
+  { id: "parrilladas", nombre: "Parrilladas", icono: "i-parrilla", nota: "300 g con pimiento morrón, cebolla y tocino. Para 2 personas.", items: [
+    { n: "Parrillada de bistec", p: 298 }, { n: "Parrillada de sirloin", p: 335 }, { n: "Parrillada de arrachera", p: 365 },
+  ]},
+  { id: "hamburguesas", nombre: "Hamburguesas", icono: "i-hamburguesa", items: [
+    { n: "Hamburguesa", d: "Con queso y tocino", p: 78 },
+    { n: "Hamburguesa con papas", d: "Con papas a la francesa", p: 98 },
+    { n: "Carne extra para hamburguesa", p: 35 },
+  ]},
+  { id: "quesos", nombre: "Los quesos", icono: "i-queso", items: [
+    { n: "Zopilotas (3)", d: "Con ensalada California", p: 230, op: TORTILLA },
+    { n: "Quesadillas (3)", d: "Con ensalada California", p: 148, op: TORTILLA },
+    { n: "Queso fundido con chorizo", d: "Con tortillas de harina y maíz", p: 240 },
+    { n: "Queso fundido natural", d: "Con tortillas de harina y maíz", p: 160 },
+    { n: "Queso fundido con rajas", d: "Con tortillas de harina y maíz", p: 175 },
+    { n: "Queso fundido con tocino", d: "Con tortillas de harina y maíz", p: 198 },
+    { n: "Extra para queso fundido", p: 35 },
+  ]},
+  { id: "acompanar", nombre: "Para acompañar", icono: "i-acompanar", items: [
+    { n: "Ensalada California", d: "Brócoli, zanahoria, pepino, tomate y lechuga", p: 78 },
+    { n: "Guacamole con totopos", p: 80 },
+    { n: "Frijoles charros", p: 28 },
+    { n: "Papa asada", d: "Con queso asadero y mantequilla", p: 80 },
+    { n: "Papa asada con carne", d: "Con queso asadero y mantequilla", p: 110 },
+    { n: "Papas a la francesa", p: 62 },
+  ]},
+  { id: "bebidas", nombre: "Bebidas", icono: "i-bebida", items: [
+    { n: "Refresco", p: 30, op: ["Coca-Cola", "Sprite", "Sidral", "Fanta", "Fresca"] },
+    { n: "Refresco desechable", p: 35, op: ["Normal", "Light"] },
+    { n: "Agua mineral desechable", p: 35 },
+    { n: "Agua embotellada", p: 24 },
+    { n: "Limonada natural (vaso)", p: 30 }, { n: "Limonada mineral (vaso)", p: 36 },
+    { n: "Jarra de limonada natural", p: 110 }, { n: "Jarra de limonada mineral", p: 130 },
+    { n: "Nescafé", p: 20 },
+  ]},
+  { id: "cervezas", nombre: "Cervezas", icono: "i-cerveza", items: [
+    { n: "Modelo (bote)", p: 38 }, { n: "Corona", p: 36 }, { n: "Victoria", p: 36 }, { n: "Clamacheve", p: 78 }, { n: "Vaso michelado", p: 30 },
+  ]},
+  { id: "postres", nombre: "Postres", icono: "i-postre", items: [
+    { n: "Pastel", p: 75 }, { n: "Flan napolitano", p: 48 }, { n: "Pay de queso casero", p: 60 },
+  ]},
+  { id: "extras", nombre: "Extras", icono: "i-extra", items: [
+    { n: "Orden de tortillas de maíz", p: 20 }, { n: "Orden de tortillas de harina", p: 25 }, { n: "Orden de totopos extra", p: 18 },
+  ]},
+];
+
+// ===== Estado (se guarda en el teléfono por si se cierra la página) =====
+const $ = (s, r = document) => r.querySelector(s);
+const pesos = (n) => "$" + n.toLocaleString("es-MX");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const guardado = JSON.parse(localStorage.getItem("gils-pedido") || "{}");
+const estado = { entrega: guardado.entrega || "domicilio", carrito: guardado.carrito || {}, ubicacion: null };
+const guardar = () => localStorage.setItem("gils-pedido", JSON.stringify({ entrega: estado.entrega, carrito: estado.carrito }));
+const todos = {};
+MENU.forEach((c) => c.items.forEach((it, ii) => { it.id = `${c.id}-${ii}`; it.cat = c; todos[it.id] = it; }));
+const clave = (id, op) => (op ? `${id}|${op}` : id);
+const lineas = () => Object.entries(estado.carrito).filter(([, q]) => q > 0).map(([k, q]) => { const [id, op] = k.split("|"); return { k, it: todos[id], op, q }; }).filter((l) => l.it);
+const cuenta = () => lineas().reduce((a, l) => ({ q: a.q + l.q, t: a.t + l.q * l.it.p }), { q: 0, t: 0 });
+const enItem = (id) => Object.entries(estado.carrito).filter(([k]) => k.split("|")[0] === id).reduce((a, [, n]) => a + n, 0);
+const transicion = (fn) => (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches ? document.startViewTransition(fn) : fn());
+
+// ===== Letra grande =====
+const btnLetra = $("#btnLetra");
+function letra(grande) { document.documentElement.classList.toggle("grande", grande); btnLetra.setAttribute("aria-pressed", String(grande)); localStorage.setItem("gils-letra", grande ? "1" : "0"); }
+letra(localStorage.getItem("gils-letra") === "1");
+btnLetra.addEventListener("click", () => letra(btnLetra.getAttribute("aria-pressed") !== "true"));
+
+// ===== A domicilio / Para recoger =====
+function pintarEntrega() {
+  document.querySelectorAll("[data-entrega]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.entrega === estado.entrega)));
+  $("#dondeTxt").textContent = estado.entrega === "domicilio" ? "Te lo llevamos a tu casa" : "Lo recoges en Calle Centenario 277";
+}
+document.querySelectorAll("[data-entrega]").forEach((b) => b.addEventListener("click", () => { estado.entrega = b.dataset.entrega; guardar(); pintarEntrega(); }));
+
+// ===== Menú =====
+const plus = '<svg aria-hidden="true"><use href="#i-mas"/></svg>';
+function pintarMenu() {
+  $("#cats").innerHTML = MENU.map((c) => `<a href="#cat-${c.id}" data-cat="${c.id}"><img src="img/${c.icono}.png" alt="" width="120" height="100">${esc(c.nombre)}</a>`).join("");
+  $("#menu").innerHTML = MENU.map((c) => `
+    <section class="cat" id="cat-${c.id}" aria-labelledby="t-${c.id}">
+      <div class="cat-cab"><img src="img/${c.icono}.png" alt="" width="120" height="100"><h2 id="t-${c.id}">${esc(c.nombre)}</h2></div>
+      <p class="orn" aria-hidden="true">★</p>
+      ${c.nota ? `<p class="nota">${esc(c.nota)}</p>` : ""}
+      <div class="items">${c.items.map((it) => `<button class="item" type="button" id="it-${it.id}" data-id="${it.id}"></button>`).join("")}</div>
+    </section>`).join("");
+  Object.keys(todos).forEach(pintarItem);
+}
+function pintarItem(id) {
+  const it = todos[id], el = $("#it-" + id), n = enItem(id);
+  el.classList.toggle("lleva", n > 0);
+  el.setAttribute("aria-label", `${it.n}, ${pesos(it.p)}${n ? `, llevas ${n}` : ""}. Toca para agregar.`);
+  el.innerHTML = `${n ? `<span class="badge" aria-hidden="true">${n} en tu pedido</span>` : ""}<h3>${esc(it.n)}${it.op ? `<span class="op-tag">${esc(it.op.length === 2 ? it.op.join(" o ") : "Elige")}</span>` : ""}</h3>${it.d ? `<p class="desc">${esc(it.d)}</p>` : ""}<p class="precio">${pesos(it.p)}</p><span class="mas" aria-hidden="true">${plus}</span>`;
+}
+$("#menu").addEventListener("click", (e) => { const b = e.target.closest(".item"); if (b) abrirPlato(b.dataset.id); });
+
+// Categorías: marca en la barra la sección en la que vas
+const obs = new IntersectionObserver((ents) => {
+  ents.forEach((en) => {
+    if (!en.isIntersecting) return;
+    const id = en.target.id.replace("cat-", "");
+    document.querySelectorAll("#cats a").forEach((a) => a.setAttribute("aria-current", String(a.dataset.cat === id)));
+    const a = $(`#cats a[data-cat="${id}"]`);
+    if (a) $("#cats").scrollTo({ left: a.offsetLeft - 12, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  });
+}, { rootMargin: "-40% 0px -55% 0px" });
+addEventListener("scroll", () => $("#top").classList.toggle("compacto", scrollY > 40), { passive: true });
+
+// ===== Hoja de un platillo =====
+const hojaPlato = $("#hojaPlato");
+let actual = null;
+function abrirPlato(id) {
+  const it = todos[id];
+  actual = { id, op: it.op ? it.op[0] : null, cant: 1 };
+  $("#plIco").src = `img/${it.cat.icono}.png`;
+  $("#plNom").textContent = it.n;
+  $("#plDesc").textContent = it.d || it.cat.nota || "";
+  $("#plPrecio").textContent = pesos(it.p) + (it.op ? "" : "");
+  $("#plOpGrupo").hidden = !it.op;
+  if (it.op) {
+    $("#plOpT").textContent = it.op === TORTILLA || it.op.includes("Maíz") ? "Tortilla" : "Elige";
+    $("#plOps").innerHTML = it.op.map((o, i) => `<button type="button" data-op="${esc(o)}" aria-pressed="${i === 0}">${esc(o)}</button>`).join("");
+  }
+  pintarPlato();
+  hojaPlato.showModal();
+}
+function pintarPlato() {
+  const it = todos[actual.id];
+  $("#plCant").textContent = actual.cant;
+  $("#plTotal").textContent = pesos(it.p * actual.cant);
+  $("#plMenos").disabled = actual.cant <= 1;
+  document.querySelectorAll("#plOps button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.op === actual.op)));
+}
+$("#plOps").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { actual.op = b.dataset.op; pintarPlato(); } });
+$("#plMas").addEventListener("click", () => { actual.cant = Math.min(99, actual.cant + 1); pintarPlato(); });
+$("#plMenos").addEventListener("click", () => { actual.cant = Math.max(1, actual.cant - 1); pintarPlato(); });
+$("#plAgregar").addEventListener("click", () => {
+  const k = clave(actual.id, actual.op);
+  estado.carrito[k] = (estado.carrito[k] || 0) + actual.cant;
+  guardar();
+  const it = todos[actual.id];
+  hojaPlato.close();
+  pintarItem(actual.id);
+  actualizarBolsa(true);
+  aviso(`${actual.cant} × ${it.n}${actual.op ? ` (${actual.op})` : ""} agregado`);
+});
+
+// ===== Barra del pedido y aviso =====
+function actualizarBolsa(pum) {
+  const { q, t } = cuenta();
+  $("#bolsa").classList.toggle("ve", q > 0);
+  $("#bolsaN").textContent = q;
+  $("#bolsaT").textContent = pesos(t);
+  if (pum) { const n = $("#bolsaN"); n.classList.remove("pum"); void n.offsetWidth; n.classList.add("pum"); }
+}
+let tAviso;
+function aviso(txt) { $("#toastTxt").textContent = txt; $("#toast").classList.add("ve"); clearTimeout(tAviso); tAviso = setTimeout(() => $("#toast").classList.remove("ve"), 2200); }
+
+// ===== Hoja del pedido =====
+const hojaPedido = $("#hojaPedido");
+let paso = 1;
+$("#btnBolsa").addEventListener("click", () => { verPaso(1); hojaPedido.showModal(); });
+function verPaso(n) {
+  paso = n;
+  const domicilio = estado.entrega === "domicilio";
+  transicion(() => {
+    $("#vistaLista").hidden = n !== 1;
+    $("#vistaDatos").hidden = n !== 2;
+    $("#pedAtras").hidden = n !== 2;
+    $("#pedT").textContent = n === 1 ? "Tu pedido" : "Tus datos";
+    $("#paso2bar").classList.toggle("ya", n === 2);
+    $("#pedSiguiente").hidden = n !== 1;
+    $("#pedEnviar").hidden = n !== 2;
+    $("#pedAyuda").hidden = n !== 2;
+    if (n === 1) pintarPedido();
+    if (n === 2) {
+      document.querySelectorAll(".solo-domicilio").forEach((el) => (el.hidden = !domicilio));
+      $("#direccion").required = domicilio;
+      $("#entregaChip").innerHTML = `<svg aria-hidden="true" style="width:18px;height:18px"><use href="#${domicilio ? "i-moto" : "i-bolsa"}"/></svg>${domicilio ? "A domicilio" : "Para recoger en Calle Centenario 277"} <button type="button" id="cambiarEntrega">Cambiar</button>`;
+      $("#cambiarEntrega").addEventListener("click", () => { estado.entrega = domicilio ? "recoger" : "domicilio"; guardar(); pintarEntrega(); verPaso(2); });
+    }
+  });
+  $("#pedCuerpo").scrollTop = 0;
+}
+function pintarPedido() {
+  const ls = lineas();
+  const domicilio = estado.entrega === "domicilio";
+  $("#notaEnvio").textContent = domicilio ? "A domicilio. El costo del envío te lo confirman por WhatsApp." : `Lo recoges en ${SUCURSAL}.`;
+  $("#lineas").innerHTML = ls.length ? ls.map((l) => `
+    <div class="linea" data-k="${esc(l.k)}">
+      <span class="nom">${esc(l.it.n)}</span><span class="imp">${pesos(l.q * l.it.p)}</span>
+      <span class="sub">${l.op ? esc(l.op) + " · " : ""}${pesos(l.it.p)} c/u</span>
+      <div class="stepper"><button type="button" data-menos aria-label="Quitar uno de ${esc(l.it.n)}">−</button><output>${l.q}</output><button type="button" data-mas aria-label="Agregar otro ${esc(l.it.n)}">+</button></div>
+    </div>`).join("") : `<div class="vacio"><img src="img/icono-192.png" alt=""><p>Todavía no agregas nada.</p></div>`;
+  const t = cuenta().t;
+  $("#total").textContent = pesos(t);
+  $("#pedSigTotal").textContent = pesos(t);
+  $("#pedSiguiente").disabled = !ls.length;
+  $("#pedSiguiente").style.opacity = ls.length ? "" : ".5";
+}
+$("#lineas").addEventListener("click", (e) => {
+  const fila = e.target.closest(".linea"), b = e.target.closest("button");
+  if (!fila || !b) return;
+  const k = fila.dataset.k;
+  if ("mas" in b.dataset) estado.carrito[k]++;
+  if ("menos" in b.dataset) estado.carrito[k]--;
+  if (estado.carrito[k] <= 0) delete estado.carrito[k];
+  guardar(); pintarPedido(); pintarItem(k.split("|")[0]); actualizarBolsa(false);
+  if (!lineas().length) setTimeout(() => hojaPedido.close(), 600);
+});
+$("#pedSiguiente").addEventListener("click", () => { if (lineas().length) verPaso(2); });
+$("#pedAtras").addEventListener("click", () => verPaso(1));
+
+// Pago: "con cuánto" solo en efectivo
+document.querySelectorAll('input[name="pago"]').forEach((r) => r.addEventListener("change", () => ($("#cambioCaja").hidden = $("#datos").pago.value !== "Efectivo")));
+
+// Ubicación exacta (para el repartidor)
+$("#btnUbicacion").addEventListener("click", () => {
+  const txt = $("#ubicacionTxt");
+  if (!navigator.geolocation) { txt.textContent = "Tu teléfono no permite mandar la ubicación. Escribe bien tu dirección y una referencia."; return; }
+  txt.textContent = "Buscando tu ubicación… si el teléfono pregunta, toca Permitir.";
+  navigator.geolocation.getCurrentPosition(
+    (p) => { estado.ubicacion = `https://maps.google.com/?q=${p.coords.latitude.toFixed(6)},${p.coords.longitude.toFixed(6)}`; txt.innerHTML = '<span class="ubic-ok"><svg aria-hidden="true" style="width:18px;height:18px;vertical-align:-3px"><use href="#i-ok"/></svg> Listo, tu ubicación va en el pedido.</span>'; },
+    () => { txt.textContent = "No se pudo tomar la ubicación. No pasa nada: escribe tu dirección y una referencia."; },
+    { enableHighAccuracy: true, timeout: 15000 }
+  );
+});
+
+// Enviar por WhatsApp
+$("#datos").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const f = e.target, ls = lineas(), domicilio = estado.entrega === "domicilio";
+  const faltan = [];
+  if (!ls.length) faltan.push("agregar algo del menú");
+  if (!f.nombre.value.trim()) faltan.push("tu nombre");
+  if (!f.tel.value.trim()) faltan.push("tu teléfono");
+  if (domicilio && !f.direccion.value.trim()) faltan.push("tu dirección");
+  const av = $("#faltan");
+  if (faltan.length) {
+    av.textContent = "Nos falta: " + faltan.join(", ") + ".";
+    av.hidden = false;
+    const primero = !f.nombre.value.trim() ? f.nombre : !f.tel.value.trim() ? f.tel : domicilio && !f.direccion.value.trim() ? f.direccion : null;
+    if (primero) primero.focus();
+    return;
+  }
+  av.hidden = true;
+  const pago = f.pago.value;
+  const msg = [
+    `*NUEVO PEDIDO · Gil's Restaurant*`,
+    domicilio ? `*A DOMICILIO*` : `*PARA RECOGER* en ${SUCURSAL}`,
+    ``,
+    ...ls.map((l) => `• ${l.q} × ${l.it.n}${l.op ? ` (${l.op})` : ""} — ${pesos(l.q * l.it.p)}`),
+    ``,
+    `*Total: ${pesos(cuenta().t)}*${domicilio ? " + envío" : ""}`,
+    `Pago: ${pago}${pago === "Efectivo" && f.cambio.value.trim() ? ` (paga con $${f.cambio.value.trim().replace(/[^\d.]/g, "")})` : ""}`,
+    ``,
+    `Nombre: ${f.nombre.value.trim()}`,
+    `Teléfono: ${f.tel.value.trim()}`,
+    ...(domicilio ? [`Dirección: ${f.direccion.value.trim()}`, ...(f.referencia.value.trim() ? [`Referencia: ${f.referencia.value.trim()}`] : []), ...(estado.ubicacion ? [`Ubicación: ${estado.ubicacion}`] : [])] : []),
+    ...(f.notas.value.trim() ? [``, `Notas: ${f.notas.value.trim()}`] : []),
+  ].join("\n");
+  window.location.href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`;
+});
+
+// ===== Cómo llegar: mapa en 3D, ruta y navegación paso a paso dentro de la página =====
+// MapLibre (libre) + mapa de OpenFreeMap con edificios en relieve + rutas de OSRM (sin claves ni pagos).
+// La librería se baja solo cuando abren el mapa, para que el menú siga cargando rápido.
+const GILS = [-103.49836433, 25.56815035];
+const RUTEO = ["https://router.project-osrm.org/route/v1/driving", "https://routing.openstreetmap.de/routed-car/route/v1/driving"];
+const quieto = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const hojaMapa = $("#hojaMapa");
+let mapa = null, ruta = null, marcaTu = null, cargaLib = null, desdeActual = null;
+let avisaListo; const mapaListo = new Promise((ok) => (avisaListo = ok)); // la ruta espera a que el mapa esté listo
+function cargarLib() {
+  if (window.maplibregl) return Promise.resolve();
+  return (cargaLib ||= new Promise((ok, mal) => {
+    const css = document.createElement("link"); css.rel = "stylesheet"; css.href = "https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css"; document.head.appendChild(css);
+    const s = document.createElement("script"); s.src = "https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"; s.onload = ok; s.onerror = mal; document.head.appendChild(s);
+  }));
+}
+async function abrirMapa(conRuta) {
+  // En celular el mapa siempre abre en pantalla completa: así nunca sale cortado.
+  if (matchMedia("(max-width: 899px)").matches) hojaMapa.classList.add("completo");
+  hojaMapa.showModal();
+  try {
+    await cargarLib();
+  } catch {
+    $("#mapaCargando").textContent = "No se pudo cargar el mapa. Revisa tu internet o usa Google Maps.";
+    return;
+  }
+  if (!mapa) {
+    mapa = new maplibregl.Map({ container: "mapa3d", style: "https://tiles.openfreemap.org/styles/liberty", center: GILS, zoom: 16.4, pitch: 62, bearing: -25, attributionControl: { compact: true }, maxPitch: 75 });
+    mapa.addControl(new maplibregl.NavigationControl({ visualizePitch: true, showZoom: true }), "top-right");
+    const el = document.createElement("div");
+    el.className = "pin-gils";
+    el.innerHTML = `<img src="img/icono-180.png" alt=""><span>Gil's</span>`;
+    new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat(GILS).addTo(mapa);
+    await new Promise((ok) => mapa.once("load", ok));
+    $("#mapaCargando").hidden = true;
+    avisaListo();
+    if (!quieto()) mapa.easeTo({ bearing: 20, duration: 6000, easing: (t) => t });
+  } else mapa.resize();
+  if (conRuta) trazarRuta();
+}
+
+function miUbicacion() {
+  return new Promise((ok, mal) => {
+    if (!navigator.geolocation) return mal(new Error("sin gps"));
+    navigator.geolocation.getCurrentPosition((p) => ok([p.coords.longitude, p.coords.latitude]), mal, { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
+  });
+}
+async function pedirRuta(desde) {
+  for (const base of RUTEO) {
+    try {
+      const r = await fetch(`${base}/${desde.join(",")};${GILS.join(",")}?overview=full&geometries=geojson&steps=true`, { signal: AbortSignal.timeout(12000) });
+      const j = await r.json();
+      if (j.code === "Ok" && j.routes?.[0]) return j.routes[0];
+    } catch {}
+  }
+  throw new Error("sin ruta");
+}
+const linea = (coords, n) => ({ type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: coords.slice(0, Math.max(2, n)) } });
+function ponerTu(pos) {
+  if (!marcaTu) {
+    const tu = document.createElement("div");
+    tu.className = "pin-tu";
+    tu.innerHTML = "<i></i><span>Tú</span>";
+    marcaTu = new maplibregl.Marker({ element: tu }).setLngLat(pos).addTo(mapa);
+  } else marcaTu.setLngLat(pos);
+}
+function dibujarRuta(r, completa = true) {
+  const coords = r.geometry.coordinates;
+  const datos = linea(coords, completa ? coords.length : 2);
+  if (mapa.getSource("ruta")) mapa.getSource("ruta").setData(datos);
+  else {
+    mapa.addSource("ruta", { type: "geojson", data: datos });
+    mapa.addLayer({ id: "ruta-borde", type: "line", source: "ruta", layout: { "line-join": "round", "line-cap": "round" }, paint: { "line-color": "#ffffff", "line-width": 13 } });
+    mapa.addLayer({ id: "ruta", type: "line", source: "ruta", layout: { "line-join": "round", "line-cap": "round" }, paint: { "line-color": "#730f11", "line-width": 8 } });
+  }
+}
+function mostrarTotales(km, min) {
+  $("#rutaKm").textContent = distTxt(km * 1000);
+  $("#rutaMin").textContent = `${Math.max(1, Math.round(min))} min`;
+  $("#rutaInfo").hidden = false;
+}
+async function trazarRuta() {
+  const msg = $("#rutaMsg"), btn = $("#btnRuta");
+  btn.disabled = true;
+  if (!mapa || !window.maplibregl) { msg.textContent = "Cargando el mapa…"; }
+  await mapaListo;
+  msg.textContent = "Buscando tu ubicación… si el teléfono pregunta, toca Permitir.";
+  try { desdeActual = await miUbicacion(); } catch {
+    msg.textContent = "No pudimos ver tu ubicación. Revisa que el teléfono tenga la ubicación prendida y vuelve a intentar.";
+    btn.disabled = false; return;
+  }
+  $("#btnGoogle").href = `https://www.google.com/maps/dir/?api=1&origin=${desdeActual[1]},${desdeActual[0]}&destination=${GILS[1]},${GILS[0]}&travelmode=driving`;
+  msg.textContent = "Calculando la ruta…";
+  try { ruta = await pedirRuta(desdeActual); } catch {
+    msg.textContent = "No se pudo calcular la ruta. Revisa tu internet y vuelve a intentar.";
+    btn.disabled = false; return;
+  }
+  mostrarTotales(ruta.distance / 1000, ruta.duration / 60);
+  pantallaCompleta(true);
+  msg.textContent = "Toca Empezar y te vamos guiando hasta la puerta.";
+  btn.hidden = true;
+  $("#btnIr").hidden = false;
+  ponerTu(desdeActual);
+  dibujarRuta(ruta, false);
+  recorrer(ruta.geometry.coordinates);
+}
+/** El mapa ocupa toda la pantalla (y el panel flota abajo). */
+function pantallaCompleta(si) {
+  hojaMapa.classList.toggle("completo", si);
+  setTimeout(() => mapa && mapa.resize(), 60);
+  setTimeout(() => mapa && mapa.resize(), 420);
+}
+const abajo = () => (hojaMapa.classList.contains("completo") ? ($("#panelMapa").offsetHeight || 200) + 40 : 60);
+// Vista previa: la ruta se dibuja y la cámara la recorre en 3D; al final se ve completa.
+function recorrer(coords) {
+  const fuente = mapa.getSource("ruta");
+  const caja = coords.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]));
+  const vistaFinal = () => mapa.fitBounds(caja, { padding: { top: 90, bottom: abajo(), left: 50, right: 50 }, pitch: 55, bearing: -20, duration: quieto() ? 0 : 1600 });
+  if (quieto()) { fuente.setData(linea(coords, coords.length)); return vistaFinal(); }
+  const rumbo = (a, b) => (Math.atan2(b[0] - a[0], b[1] - a[1]) * 180) / Math.PI;
+  const mover = (op) => new Promise((ok) => { mapa.once("moveend", ok); mapa.easeTo(op); });
+  const id = (recorrer.vuelta = (recorrer.vuelta || 0) + 1);
+  const sigue = () => hojaMapa.open && recorrer.vuelta === id && !nav.activa;
+  (async () => {
+    fuente.setData(linea(coords, 2));
+    const t0 = performance.now(), dibujo = 2200;
+    const dibuja = (ahora) => { const p = Math.min(1, (ahora - t0) / dibujo); fuente.setData(linea(coords, Math.ceil(p * coords.length))); if (p < 1 && sigue()) requestAnimationFrame(dibuja); };
+    requestAnimationFrame(dibuja);
+    await new Promise((ok) => { mapa.once("moveend", ok); mapa.fitBounds(caja, { padding: { top: 90, bottom: abajo(), left: 50, right: 50 }, pitch: 45, bearing: 0, duration: 1400 }); });
+    await new Promise((ok) => setTimeout(ok, 900));
+    const tramos = 6;
+    for (let k = 0; k <= tramos && sigue(); k++) {
+      const i = Math.round((k / tramos) * (coords.length - 1));
+      const sig = coords[Math.min(i + 4, coords.length - 1)];
+      await mover({ center: coords[i], zoom: 16.2, pitch: 66, bearing: k === tramos ? 20 : rumbo(coords[i], sig), duration: k ? 1500 : 1200, easing: (t) => t * (2 - t) });
+    }
+    if (sigue()) { fuente.setData(linea(coords, coords.length)); vistaFinal(); }
+  })();
+}
+
+// ---------- Navegación paso a paso (sin salir de la página) ----------
+const R = 6371000, rad = (g) => (g * Math.PI) / 180;
+function metros(a, b) {
+  const dLat = rad(b[1] - a[1]), dLon = rad(b[0] - a[0]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a[1])) * Math.cos(rad(b[1])) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+const rumboDe = (a, b) => (Math.atan2(rad(b[0] - a[0]) * Math.cos(rad(a[1])), rad(b[1] - a[1])) * 180) / Math.PI;
+function distTxt(m) {
+  if (m >= 1000) return `${(m / 1000).toFixed(1)} km`;
+  if (m >= 100) return `${Math.round(m / 50) * 50} m`;
+  return `${Math.max(10, Math.round(m / 10) * 10)} m`;
+}
+/** Punto de la ruta más cercano a la posición: {dist (m al camino), i (tramo), recorrido (m desde el inicio)}. */
+function sobreLaRuta(pos, coords, acum) {
+  let mejor = { dist: Infinity, i: 0, recorrido: 0 };
+  const kx = Math.cos(rad(pos[1])) * 111320, ky = 110540;
+  for (let i = 0; i < coords.length - 1; i++) {
+    const a = coords[i], b = coords[i + 1];
+    const ax = (a[0] - pos[0]) * kx, ay = (a[1] - pos[1]) * ky, bx = (b[0] - pos[0]) * kx, by = (b[1] - pos[1]) * ky;
+    const dx = bx - ax, dy = by - ay, l2 = dx * dx + dy * dy;
+    const t = l2 ? Math.max(0, Math.min(1, -(ax * dx + ay * dy) / l2)) : 0;
+    const px = ax + t * dx, py = ay + t * dy, d = Math.hypot(px, py);
+    if (d < mejor.dist) mejor = { dist: d, i, recorrido: acum[i] + t * Math.sqrt(l2) };
+  }
+  return mejor;
+}
+const LADO = { left: "a la izquierda", right: "a la derecha", "slight left": "ligeramente a la izquierda", "slight right": "ligeramente a la derecha", "sharp left": "bien cerrado a la izquierda", "sharp right": "bien cerrado a la derecha", straight: "derecho", uturn: "en U" };
+const ORD = ["", "primera", "segunda", "tercera", "cuarta", "quinta", "sexta"];
+/** Instrucción en español a partir de la maniobra de OSRM. */
+function instruccion(paso) {
+  const m = paso.maneuver, calle = paso.name ? ` en ${paso.name}` : "", por = paso.name ? ` por ${paso.name}` : "";
+  const lado = LADO[m.modifier] || "";
+  switch (m.type) {
+    case "depart": return `Arranca${por}`;
+    case "arrive": return "Llegaste a Gil's";
+    case "roundabout": case "rotary": case "roundabout turn": return `En la glorieta, toma la ${ORD[m.exit] || ""} salida${calle}`.replace("  ", " ");
+    case "fork": return `En la división, mantente ${lado}${calle}`;
+    case "end of road": return `Al final de la calle, gira ${lado}${calle}`;
+    case "merge": return `Incorpórate${calle}`;
+    case "continue": case "new name": return m.modifier === "straight" || !lado ? `Sigue derecho${por}` : `Sigue ${lado}${por}`;
+    default: return m.modifier === "uturn" ? "Da vuelta en U" : m.modifier === "straight" ? `Sigue derecho${por}` : `Gira ${lado}${calle}`;
+  }
+}
+const FLECHA = { left: -90, right: 90, "slight left": -45, "slight right": 45, "sharp left": -135, "sharp right": 135, uturn: 180, straight: 0 };
+const nav = { activa: false, vigila: null, pasos: [], acum: [], coords: [], fuera: 0, dicho: new Set(), voz: true, candado: null, ultimo: null, recalculando: false };
+function prepararNav(r) {
+  nav.coords = r.geometry.coordinates;
+  nav.acum = [0];
+  for (let i = 1; i < nav.coords.length; i++) nav.acum.push(nav.acum[i - 1] + metros(nav.coords[i - 1], nav.coords[i]));
+  nav.total = nav.acum[nav.acum.length - 1];
+  nav.duracion = r.duration;
+  nav.pasos = r.legs.flatMap((l) => l.steps).map((s) => ({ ...s, en: sobreLaRuta(s.maneuver.location, nav.coords, nav.acum).recorrido }));
+  nav.dicho = new Set();
+  nav.fuera = 0;
+}
+function decir(txt) {
+  if (!nav.voz || !("speechSynthesis" in window)) return;
+  // La voz dice las unidades completas: "70 metros", "1.2 kilómetros"
+  const u = new SpeechSynthesisUtterance(txt.replace(/(d) km/g, "$1 kilómetros").replace(/(d) m/g, "$1 metros"));
+  u.lang = "es-MX";
+  u.rate = 0.95;
+  const v = speechSynthesis.getVoices().find((x) => /^es(-|_)?(MX|US|419)/i.test(x.lang)) || speechSynthesis.getVoices().find((x) => /^es/i.test(x.lang));
+  if (v) u.voice = v;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+async function empezarNav() {
+  if (!ruta) return;
+  nav.activa = true;
+  recorrer.vuelta = (recorrer.vuelta || 0) + 1; // detiene la vista previa
+  hojaMapa.classList.add("navegando");
+  $("#guia").hidden = false;
+  $("#navPie").hidden = false;
+  $("#rutaInfo").hidden = true;
+  $("#btnIr").hidden = true;
+  $("#rutaMsg").hidden = true;
+  $("#filaMapa").hidden = true;
+  prepararNav(ruta);
+  dibujarRuta(ruta, true);
+  setTimeout(() => mapa.resize(), 350);
+  try { nav.candado = await navigator.wakeLock?.request("screen"); } catch {}
+  decir(`Vamos a Gil's. ${instruccion(nav.pasos[1] || nav.pasos[0])}`);
+  nav.dicho.add((nav.pasos[1] || nav.pasos[0]).maneuver.location.join(",") + "a");
+  actualizarNav(desdeActual, null);
+  nav.vigila = navigator.geolocation.watchPosition(
+    (p) => actualizarNav([p.coords.longitude, p.coords.latitude], p.coords.speed > 1.5 && p.coords.heading != null && !isNaN(p.coords.heading) ? p.coords.heading : null),
+    () => { $("#guiaTxt").textContent = "Perdimos tu ubicación. Revisa que el GPS esté prendido."; },
+    { enableHighAccuracy: true, maximumAge: 2000, timeout: 20000 }
+  );
+}
+function terminarNav(llegaste = false) {
+  nav.activa = false;
+  if (nav.vigila != null) navigator.geolocation.clearWatch(nav.vigila);
+  nav.vigila = null;
+  try { nav.candado?.release(); } catch {}
+  nav.candado = null;
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  hojaMapa.classList.remove("navegando");
+  $("#navPie").hidden = true;
+  $("#filaMapa").hidden = false;
+  $("#rutaMsg").hidden = false;
+  if (llegaste) {
+    $("#guia").classList.add("llegaste");
+    $("#guiaFlecha").style.transform = "rotate(0deg)";
+    $("#guiaTxt").textContent = "Llegaste a Gil's. Buen provecho.";
+    $("#guiaDist").textContent = "";
+    $("#rutaMsg").textContent = "Ya estás en Gil's. Pasa, te esperamos.";
+    mapa.easeTo({ center: GILS, zoom: 17.5, pitch: 60, bearing: 30, duration: 1500 });
+  } else {
+    $("#guia").hidden = true;
+    $("#btnIr").hidden = false;
+    $("#rutaInfo").hidden = false;
+  }
+  setTimeout(() => mapa.resize(), 350);
+}
+async function recalcular(pos) {
+  if (nav.recalculando) return;
+  nav.recalculando = true;
+  $("#guiaTxt").textContent = "Recalculando la ruta…";
+  $("#guiaDist").textContent = "";
+  try {
+    ruta = await pedirRuta(pos);
+    prepararNav(ruta);
+    dibujarRuta(ruta, true);
+    decir("Recalculando. " + instruccion(nav.pasos[1] || nav.pasos[0]));
+  } catch {}
+  nav.recalculando = false;
+}
+function actualizarNav(pos, rumboGps) {
+  if (!nav.activa || !pos) return;
+  desdeActual = pos;
+  ponerTu(pos);
+  if (metros(pos, GILS) < 35) { decir("Llegaste a Gil's. Buen provecho."); return terminarNav(true); }
+  const s = sobreLaRuta(pos, nav.coords, nav.acum);
+  // Fuera de la ruta dos veces seguidas: se calcula otra desde donde va
+  nav.fuera = s.dist > 55 ? nav.fuera + 1 : 0;
+  if (nav.fuera >= 2) { nav.fuera = 0; recalcular(pos); return; }
+  const falta = Math.max(0, nav.total - s.recorrido);
+  if (falta < 25) { decir("Llegaste a Gil's. Buen provecho."); return terminarNav(true); }
+  const k = nav.pasos.findIndex((p, idx) => idx > 0 && p.en > s.recorrido + 8);
+  const paso = nav.pasos[k >= 0 ? k : nav.pasos.length - 1];
+  const hasta = Math.max(0, paso.en - s.recorrido);
+  const txt = instruccion(paso);
+  $("#guiaTxt").textContent = txt;
+  $("#guiaDist").textContent = paso.maneuver.type === "arrive" ? `a ${distTxt(hasta)}` : `En ${distTxt(hasta)}`;
+  $("#guiaFlecha").style.transform = `rotate(${paso.maneuver.type === "arrive" ? 0 : FLECHA[paso.maneuver.modifier] ?? 0}deg)`;
+  $("#guiaFlecha").classList.toggle("meta", paso.maneuver.type === "arrive");
+  $("#navFalta").textContent = distTxt(falta);
+  $("#navMin").textContent = `${Math.max(1, Math.round((falta / nav.total) * nav.duracion / 60))} min`;
+  // Voz: aviso anticipado y aviso al momento de la vuelta
+  const clave = paso.maneuver.location.join(",");
+  if (hasta > 60 && hasta < 260 && !nav.dicho.has(clave + "a")) { nav.dicho.add(clave + "a"); decir(`En ${distTxt(hasta)}, ${txt.charAt(0).toLowerCase() + txt.slice(1)}`); }
+  if (hasta <= 45 && !nav.dicho.has(clave + "b")) { nav.dicho.add(clave + "b"); decir(txt); }
+  // Cámara: detrás de ti, mirando hacia adelante en el camino
+  const adelante = nav.coords[Math.min(s.i + 2, nav.coords.length - 1)];
+  const rumbo = rumboGps ?? rumboDe(pos, adelante);
+  mapa.easeTo({ center: pos, bearing: rumbo, zoom: 17.3, pitch: 62, duration: quieto() ? 0 : 900, padding: { top: 140, bottom: abajo(), left: 0, right: 0 } });
+}
+$("#btnMapa").addEventListener("click", () => abrirMapa(false));
+$("#btnRuta").addEventListener("click", () => trazarRuta());
+$("#btnIr").addEventListener("click", () => empezarNav());
+$("#btnRecorrer").addEventListener("click", () => ruta && !nav.activa && recorrer(ruta.geometry.coordinates));
+$("#btnTerminar").addEventListener("click", () => terminarNav(false));
+$("#btnVoz").addEventListener("click", () => {
+  nav.voz = !nav.voz;
+  $("#btnVoz").setAttribute("aria-pressed", String(nav.voz));
+  $("#btnVoz").lastChild.textContent = nav.voz ? "Voz" : "Sin voz";
+  if (!nav.voz && "speechSynthesis" in window) speechSynthesis.cancel();
+});
+hojaMapa.addEventListener("close", () => { if (nav.activa) terminarNav(false); hojaMapa.classList.remove("completo"); });
+
+// Cerrar hojas: botón X, tocar afuera (también en navegadores sin closedby) y deslizar hacia abajo
+document.querySelectorAll("dialog.hoja").forEach((dlg) => {
+  dlg.querySelectorAll("[data-cerrar]").forEach((b) => b.addEventListener("click", () => dlg.close()));
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+  let y0 = null;
+  const agarre = dlg.querySelector(".agarre"), cab = dlg.querySelector(".hoja-cab");
+  [agarre, cab].forEach((z) => {
+    z.addEventListener("touchstart", (e) => { y0 = e.touches[0].clientY; }, { passive: true });
+    z.addEventListener("touchmove", (e) => { if (y0 == null) return; const dy = Math.max(0, e.touches[0].clientY - y0); dlg.style.transition = "none"; dlg.style.transform = `translateY(${dy}px)`; }, { passive: true });
+    z.addEventListener("touchend", (e) => { if (y0 == null) return; const dy = e.changedTouches[0].clientY - y0; dlg.style.transition = ""; dlg.style.transform = ""; y0 = null; if (dy > 90) dlg.close(); });
+  });
+});
+
+// ===== Arranque =====
+pintarMenu();
+pintarEntrega();
+actualizarBolsa(false);
+document.querySelectorAll("section.cat").forEach((s) => obs.observe(s));
+</script>
+</body>
+</html>

@@ -284,7 +284,11 @@ dialog.hoja-mapa.completo { position: fixed; inset: 0; top: 0; bottom: auto; mar
   dialog.hoja-mapa:not(.completo) { inset: 0; margin: auto; width: min(64rem, 92vw); max-width: none; max-height: calc(var(--alto) * 88 / 100); border-radius: 28px; transform: scale(.96); opacity: 0; }
   dialog.hoja-mapa:not(.completo)[open] { transform: none; opacity: 1; }
   @starting-style { dialog.hoja-mapa:not(.completo)[open] { transform: scale(.96); opacity: 0; } }
-  dialog.hoja-mapa:not(.completo) .mapa3d { height: min(calc(var(--alto) * 58 / 100), 560px); }
+  /* La ventana centrada tiene alto fijo: el panel de abajo siempre se ve y el mapa toma lo que sobra. */
+  dialog.hoja-mapa:not(.completo) { height: calc(var(--alto) * 88 / 100); }
+  dialog.hoja-mapa:not(.completo) .hoja-cuerpo { display: flex; flex-direction: column; }
+  dialog.hoja-mapa:not(.completo) .mapa3d { flex: 1 1 auto; height: auto; min-height: 220px; }
+  dialog.hoja-mapa:not(.completo) .panel-mapa { flex: none; }
   .agarre { display: none; }
   .toast { bottom: 110px; }
 }
@@ -744,7 +748,8 @@ function cargarLib() {
 }
 async function abrirMapa(conRuta) {
   // En celular el mapa siempre abre en pantalla completa: así nunca sale cortado.
-  if (matchMedia("(max-width: 899px)").matches) hojaMapa.classList.add("completo");
+  // En tablet (pantalla táctil) o pantallas bajitas, también: la ventana centrada no cabe y se corta.
+  if (matchMedia("(max-width: 899px), (pointer: coarse), (max-height: 820px)").matches) hojaMapa.classList.add("completo");
   hojaMapa.showModal();
   try {
     await cargarLib();

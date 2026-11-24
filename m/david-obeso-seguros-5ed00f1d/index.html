@@ -133,12 +133,17 @@ img.cargando{opacity:0}
 .info b{font-size:18px;font-weight:700;line-height:1.25;letter-spacing:-.01em;min-width:0}
 .info small{grid-column:1/-1;color:var(--mu);font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .info .precio{grid-column:2;grid-row:1}
-.precio{font-weight:800;font-size:18px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.precio{font-weight:800;font-size:18px;font-variant-numeric:proportional-nums;white-space:nowrap}
 .mas{flex:none;width:48px;height:48px;border-radius:50%;border:0;background:var(--tx);color:var(--bg);font-size:26px;line-height:1;display:grid;place-items:center;transition:transform .15s var(--ease),background .2s,color .2s}
 .mas:active{transform:scale(.88)}
 .mas.listo{background:var(--c-f);color:#fff}
-.cat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
-.tile{display:flex;flex-direction:column;gap:2px;min-height:124px;padding:14px;border-radius:20px;background:var(--card);border:1.5px solid var(--ln)}
+.pant.con-foto:before{content:"";position:absolute;left:0;right:0;bottom:0;height:36%;z-index:-1;pointer-events:none;background:var(--foto) center 40%/cover no-repeat;opacity:.6;-webkit-mask-image:linear-gradient(transparent,#000 75%);mask-image:linear-gradient(transparent,#000 75%)}
+.cat{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+.tile{min-width:0;display:flex;flex-direction:column;gap:2px;min-height:124px;padding:14px;border-radius:20px;background:var(--card);border:1.5px solid var(--ln)}
+.tile .precio{font-size:17px;min-width:0;line-height:1.15}
+.tile .precio .u{display:block;margin-left:0}
+.precio .u{font-size:.72em;font-weight:600;color:var(--mu);margin-left:2px;letter-spacing:0}
+.g-item .precio .u{color:#ffffffc7}
 .tile b{font-size:16px;line-height:1.2;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tile small{color:var(--mu);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tile-pie{margin-top:auto;padding-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -200,7 +205,12 @@ img.cargando{opacity:0}
 .app-fila{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;margin-top:24px}
 .cel{width:124px;aspect-ratio:9/17;border-radius:26px;border:5px solid #141414;background:linear-gradient(180deg,color-mix(in srgb,var(--c) 40%,#1e1e24),#0f0f12);padding:16px 10px;display:grid;grid-template-columns:repeat(3,1fr);gap:9px;align-content:start;box-shadow:0 30px 50px -28px #000}
 .cel i{aspect-ratio:1;border-radius:8px;background:#ffffff1f}
-.cel i.mio{display:grid;place-items:center;background:transparent;color:transparent;outline:2px dashed #ffffff59;outline-offset:-2px;font-style:normal;font-weight:800;font-size:11px}
+/* Íconos de colores, como un celular de verdad (sin marcas): así no se ve vacío. */
+.cel i:nth-child(6n+1){background:linear-gradient(160deg,#5ac8fa,#2f7cf6)}.cel i:nth-child(6n+2){background:linear-gradient(160deg,#ffd166,#f59f00)}
+.cel i:nth-child(6n+3){background:linear-gradient(160deg,#8ce99a,#2f9e44)}.cel i:nth-child(6n+4){background:linear-gradient(160deg,#f783ac,#d6336c)}
+.cel i:nth-child(6n+5){background:linear-gradient(160deg,#b197fc,#7048e8)}.cel i:nth-child(6n){background:linear-gradient(160deg,#ced4da,#868e96)}
+.cel i:not(.mio){opacity:.55}
+.cel i.mio{display:grid;place-items:center;background:color-mix(in srgb,var(--c) 30%,transparent);color:#ffffffd9;outline:2px dashed #ffffffb3;outline-offset:-2px;font-style:normal;font-weight:800;font-size:11px}
 .cel.instalada i.mio{background:var(--c-f);color:#fff;outline:0;box-shadow:0 0 0 2px #ffffff8c}
 .oks{list-style:none;margin:0;padding:0;display:grid;gap:14px}
 .oks li{display:flex;gap:10px;align-items:flex-start;font-size:16px;font-weight:600;line-height:1.3}
@@ -358,6 +368,8 @@ dialog.hoja[open]::backdrop{background-color:rgb(0 0 0 / .6)}
   @keyframes bump{40%{scale:1.08}}
   .mas.listo{animation:pop .35s var(--rebote)}
   @keyframes pop{from{transform:scale(.6)}}
+  .pant.on .cel:not(.instalada) i.mio{animation:late 1.6s ease-in-out infinite}
+  @keyframes late{50%{transform:scale(1.12);outline-color:#fff}}
   .sellos i.nuevo{animation:sello .5s var(--rebote)}
   @keyframes sello{from{opacity:0;transform:scale(2.2) rotate(-25deg)}}
   .cel.instalada i.mio{animation:pop .5s var(--rebote)}
@@ -413,17 +425,17 @@ dialog.hoja[open]::backdrop{background-color:rgb(0 0 0 / .6)}
 </div></section>
 
 
-<section class="pant" id="s-servicios" data-parte="1" data-tono="claro" aria-label="Servicios"><div class="cuerpo">
+<section class="pant con-foto" style="--foto:url('https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&amp;fit=crop&amp;w=1400&amp;q=70')" id="s-servicios" data-parte="1" data-tono="claro" aria-label="Servicios"><div class="cuerpo">
 <p class="eti a" style="--d:0">Lo que hacemos</p>
 <h2 class="t a" style="--d:1">Servicios</h2>
 <div class="lista a" style="--d:2"><div class="item"><div class="info"><b>Seguro de auto</b><small>Cobertura amplia o limitada</small></div></div><div class="item"><div class="info"><b>Gastos médicos</b><small>Individual o familiar</small></div></div><div class="item"><div class="info"><b>Vida</b><small>Protege a los tuyos</small></div></div><div class="item"><div class="info"><b>Negocio</b><small>Daños, robo y responsabilidad civil</small></div></div></div>
 </div></section>
-<section class="pant" id="s-resenas" data-parte="1" data-tono="claro" aria-label="Reseñas"><div class="cuerpo">
+<section class="pant con-foto" style="--foto:url('https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&amp;fit=crop&amp;w=1400&amp;q=70')" id="s-resenas" data-parte="1" data-tono="claro" aria-label="Reseñas"><div class="cuerpo">
 <p class="eti a" style="--d:0">Reseñas de ejemplo</p>
 <h2 class="t a" style="--d:1">Lo que dicen</h2>
 <div class="resenas a" style="--d:2"><div class="resena"><div class="estrellas"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><p>Muy buena atención y cumplieron.</p><small>Laura G. · reseña de ejemplo</small></div><div class="resena"><div class="estrellas"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><p>Respondieron rápido y el precio fue justo.</p><small>Carlos M. · reseña de ejemplo</small></div><div class="resena"><div class="estrellas"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></svg></div><p>Muy profesionales, los recomiendo.</p><small>Ana R. · reseña de ejemplo</small></div></div>
 </div></section>
-<section class="pant" id="s-cotiza" data-parte="1" data-tono="claro" aria-label="Cotiza"><div class="cuerpo">
+<section class="pant con-foto" style="--foto:url('https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&amp;fit=crop&amp;w=1400&amp;q=70')" id="s-cotiza" data-parte="1" data-tono="claro" aria-label="Cotiza"><div class="cuerpo">
 <p class="eti a" style="--d:0">Sin compromiso</p>
 <h2 class="t a" style="--d:1">Cotiza aquí</h2>
 <div class="form a" style="--d:2"><input placeholder="Tu nombre" aria-label="Tu nombre" autocomplete="name"><input placeholder="WhatsApp" aria-label="WhatsApp" type="tel" inputmode="tel" autocomplete="tel"><input placeholder="¿Qué necesitas?" aria-label="¿Qué necesitas?"></div>
@@ -440,7 +452,7 @@ dialog.hoja[open]::backdrop{background-color:rgb(0 0 0 / .6)}
 <div class="burbuja yo"><svg class="ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4M8 16h.01M16 16h.01"/></svg> Listo, quedó agendado. Te mando un recordatorio una hora antes.</div></div>
 <p class="mini a" style="--d:4">Contesta, agenda y te avisa, a cualquier hora.</p>
 </div></section>
-<section class="pant" id="s-app" data-parte="1" data-tono="claro" aria-label="Tu app"><div class="cuerpo">
+<section class="pant con-foto" style="--foto:url('https://images.unsplash.com/photo-1609220136736-443140cffec6?auto=format&amp;fit=crop&amp;w=1400&amp;q=70')" id="s-app" data-parte="1" data-tono="claro" aria-label="Tu app"><div class="cuerpo">
 <p class="eti a" style="--d:0">Tu app</p>
 <h2 class="t a" style="--d:1">En el celular de tus clientes</h2>
 <div class="app-fila a" style="--d:2"><div class="cel" aria-hidden="true"><i></i><i></i><i></i><i></i><i class="mio">DO</i><i></i><i></i><i></i><i></i><i></i><i></i></div>

@@ -825,7 +825,9 @@ async function trazarRuta() {
   $("#btnGoogle").href = `https://www.google.com/maps/dir/?api=1&origin=${desdeActual[1]},${desdeActual[0]}&destination=${GILS[1]},${GILS[0]}&travelmode=driving`;
   msg.textContent = "Calculando la ruta…";
   try { ruta = await pedirRuta(desdeActual); } catch {
-    msg.textContent = "No se pudo calcular la ruta. Revisa tu internet y vuelve a intentar.";
+    msg.textContent = navigator.onLine === false
+      ? "Sin internet no se puede calcular la ruta. La dirección es Calle Centenario 277, Zona Centro, Lerdo; vuelve a intentar cuando tengas señal."
+      : "No se pudo calcular la ruta. Revisa tu internet y vuelve a intentar.";
     btn.disabled = false; return;
   }
   mostrarTotales(ruta.distance / 1000, ruta.duration / 60);
@@ -1061,6 +1063,38 @@ pintarMenu();
 pintarEntrega();
 actualizarBolsa(false);
 document.querySelectorAll("section.cat").forEach((s) => obs.observe(s));
+
+// ===== Sin internet =====
+// El service worker guarda la página, el menú y el mapa. Con señal (y sin "ahorro de datos"), se bajan
+// por detrás las calles de alrededor de Gil's, para que "Cómo llegar" se vea aunque luego no haya internet.
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register("sw.js").then(() => navigator.serviceWorker.ready).then(precargarMapa).catch(() => {});
+}
+async function precargarMapa() {
+  const hace = Date.now() - Number(localStorage.getItem("gils-mapa") || 0);
+  if (!navigator.onLine || navigator.connection?.saveData || hace < 7 * 864e5) return;
+  await new Promise((ok) => (window.requestIdleCallback || setTimeout)(ok, { timeout: 4000 }));
+  const traer = (u) => fetch(u, { mode: "cors" }).catch(() => null);
+  const estilo = await (await traer("https://tiles.openfreemap.org/styles/liberty"))?.json().catch(() => null);
+  if (!estilo) return;
+  await Promise.all(["https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js", "https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css"].map(traer));
+  const sp = estilo.sprite;
+  await Promise.all(["", "@2x"].flatMap((r) => [`${sp}${r}.json`, `${sp}${r}.png`]).map(traer));
+  const fuentes = new Set(estilo.layers.map((l) => l.layout?.["text-font"]).filter(Array.isArray).map((f) => f.join(",")));
+  await Promise.all([...fuentes].map((f) => traer(estilo.glyphs.replace("{fontstack}", f).replace("{range}", "0-255"))));
+  const tj = await (await traer(estilo.sources.openmaptiles.url))?.json().catch(() => null);
+  const plantilla = tj?.tiles?.[0];
+  if (!plantilla) return;
+  // Pedazos del mapa alrededor de Gil's: más cerca con más detalle (unos 100 pedazos, pocos MB).
+  const pedazos = [];
+  for (const [z, r] of [[12, 1], [13, 1], [14, 1], [15, 2], [16, 3]]) {
+    const n = 2 ** z, la = (GILS[1] * Math.PI) / 180;
+    const x = Math.floor(((GILS[0] + 180) / 360) * n), y = Math.floor(((1 - Math.log(Math.tan(la) + 1 / Math.cos(la)) / Math.PI) / 2) * n);
+    for (let dx = -r; dx <= r; dx++) for (let dy = -r; dy <= r; dy++) pedazos.push(plantilla.replace("{z}", z).replace("{x}", x + dx).replace("{y}", y + dy));
+  }
+  for (let i = 0; i < pedazos.length; i += 6) await Promise.all(pedazos.slice(i, i + 6).map(traer));
+  localStorage.setItem("gils-mapa", String(Date.now()));
+}
 </script>
 </body>
 </html>

@@ -2,6 +2,21 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="copyright" content="© 2026 SSS Solutions. Todos los derechos reservados.">
+<script>(function(){if(Date.now()>new Date("2026-12-10T23:59:59-06:00").getTime()){window.__vencida=1;document.documentElement.className+=" vencida-doc";}})();</script>
+<style id="proteccion">
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img{-webkit-user-drag:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+.marca-agua{position:fixed;left:50%;bottom:calc(5px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:39;pointer-events:none;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:ellipsis;font:600 10px/1.2 "Inter Tight",Arial,sans-serif;letter-spacing:.03em;color:#ffffff99;text-shadow:0 1px 4px #000}
+.nav{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))!important}
+.vencida-doc .app,.vencida-doc .grano{display:none!important}
+.vencida{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;padding:24px;background:#000;color:#fff;font-family:"Inter Tight",Arial,sans-serif}
+.vencida b{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+.vencida h1{margin:14px 0 0;font-size:clamp(34px,9vw,64px);line-height:.92;letter-spacing:-.04em;text-transform:uppercase;font-weight:900}
+.vencida p{margin:14px 0 0;color:#ffffffb3;font-size:16px}
+.vencida small{display:block;margin-top:28px;font-size:11px;color:#ffffff66}
+</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>El Patio Food Park & Bar · Lerdo</title>
 <meta name="description" content="7 restaurantes, una sola mesa. Explora El Patio Food Park & Bar en 3D y pide desde tu mesa en Lerdo.">
@@ -501,7 +516,8 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
   <button class="ok" type="button" id="v-ok">Entendido</button>
 </dialog>
 
-<script type="module">
+<script type="module">if (window.__vencida) throw new Error("Muestra vencida");
+
 import { initPatio3D } from "./js/patio3d.js";
 import { fetchLerdoWeather, fallbackWeather, WEATHER_PRESETS } from "./js/clima.js";
 
@@ -580,7 +596,7 @@ rollo.insertAdjacentHTML("beforeend", LOCALES.map((l, i) => `<section class="pan
   <div class="cinta c2" aria-hidden="true"><span>Algo rico</span><span>Algo rico</span><span>Algo rico</span><span>Algo rico</span></div>
   <div class="tx"><span class="eti">${dos(LOCALES.length + 1)} · Muy pronto</span><b>Próximamente<em>algo rico</em></b><p>Un restaurante más llega pronto a El Patio.</p>
   <div class="botones"><button class="boton lleno" type="button" id="final-3d">Ver El Patio en 3D</button><a class="boton linea" href="https://m.me/213431005195922" target="_blank" rel="noopener">Reservar mesa</a></div>
-  <small class="creditos">Muestra para El Patio con sus 7 restaurantes reales y modelo 3D basado en el lugar.<br>Fotos de platillos: T.Tseng, Thiago Fior de Castro, David Blaikie, Geoff Peters, Wotancito y Daria Yakovleva, en Wikimedia Commons (CC BY / CC0).<br>Hecho por sss.solutions</small></div></section>`);
+  <small class="creditos">Muestra para El Patio con sus 7 restaurantes reales y modelo 3D basado en el lugar.<br>Fotos de platillos: T.Tseng, Thiago Fior de Castro, David Blaikie, Geoff Peters, Wotancito y Daria Yakovleva, en Wikimedia Commons (CC BY / CC0).<br>© 2026 SSS Solutions. Todos los derechos reservados.</small></div></section>`);
 
 $("#nav").innerHTML = LOCALES.map((l, i) => `<button type="button" data-ir="${l.id}"><small>${dos(i + 1)}</small>${esc(l.nombre)}</button>`).join("");
 $("#barras").innerHTML = LOCALES.map(() => "<i></i>").join("");
@@ -832,5 +848,14 @@ if (location.hash === "#3d") {
   setTimeout(() => $("#r-" + location.hash.slice(1)).scrollIntoView(), 50);
 }
 </script>
+<div class="marca-agua" aria-hidden="true">Propuesta de SSS Solutions para El Patio · Vence el 10 dic</div>
+<script>(function(){
+if(window.__vencida){document.body.innerHTML='<div class="vencida"><div><b>SSS Solutions</b><h1>Esta muestra<br>ya venció</h1><p>Pídela de nuevo a SSS Solutions.</p><small>© 2026 SSS Solutions. Todos los derechos reservados.</small></div></div>';return;}
+var no=function(e){e.preventDefault();};
+document.addEventListener("contextmenu",no);
+document.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG")e.preventDefault();});
+document.addEventListener("selectstart",function(e){var t=e.target;if(!(t&&t.closest&&t.closest("input,textarea")))e.preventDefault();});
+document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&/^[supc]$/i.test(e.key))e.preventDefault();});
+})();</script>
 </body>
 </html>

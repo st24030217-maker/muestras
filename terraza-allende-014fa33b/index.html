@@ -2,6 +2,21 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta name="copyright" content="© 2026 SSS Solutions. Todos los derechos reservados.">
+<script>(function(){if(Date.now()>new Date("2026-12-10T23:59:59-06:00").getTime()){window.__vencida=1;document.documentElement.className+=" vencida-doc";}})();</script>
+<style id="proteccion">
+body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+img{-webkit-user-drag:none}
+input,textarea{-webkit-user-select:text;user-select:text}
+.marca-agua{position:fixed;left:50%;bottom:calc(5px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:39;pointer-events:none;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:ellipsis;font:600 10px/1.2 "Inter Tight",Arial,sans-serif;letter-spacing:.03em;color:#ffffff99;text-shadow:0 1px 4px #000}
+.nav{padding-bottom:calc(22px + env(safe-area-inset-bottom,0px))!important}
+.vencida-doc .app,.vencida-doc .grano{display:none!important}
+.vencida{position:fixed;inset:0;z-index:100;display:grid;place-items:center;text-align:center;padding:24px;background:#000;color:#fff;font-family:"Inter Tight",Arial,sans-serif}
+.vencida b{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+.vencida h1{margin:14px 0 0;font-size:clamp(34px,9vw,64px);line-height:.92;letter-spacing:-.04em;text-transform:uppercase;font-weight:900}
+.vencida p{margin:14px 0 0;color:#ffffffb3;font-size:16px}
+.vencida small{display:block;margin-top:28px;font-size:11px;color:#ffffff66}
+</style>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Terraza Allende · Gómez Palacio</title>
 <meta name="description" content="Botana, chela y buena terraza. Ve el menú y pide desde tu mesa en Terraza Allende, Gómez Palacio.">
@@ -273,9 +288,9 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
 .clima-chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .clima-chips button { min-height: 32px; padding: 0 11px; border-radius: 999px; border: 1px solid #ffffff2e; background: #ffffff0d; color: var(--blanco); font: 800 11px/1 var(--fd); letter-spacing: .06em; text-transform: uppercase; }
 .clima-chips button.on { background: var(--foco); color: #000; border-color: var(--foco); }
-.tip3d { position: absolute; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 9px 15px; border-radius: 999px; background: #000000c7; border: 1px solid #ffffff26; font: 800 11px/1 var(--fd); letter-spacing: .1em; text-transform: uppercase; color: #ffffffd9; white-space: nowrap; transition: opacity .4s; }
+.tip3d { position: absolute; left: 50%; bottom: calc(34px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 9px 15px; border-radius: 999px; background: #000000c7; border: 1px solid #ffffff26; font: 800 11px/1 var(--fd); letter-spacing: .1em; text-transform: uppercase; color: #ffffffd9; white-space: nowrap; transition: opacity .4s; }
 .tip3d.hide { opacity: 0; }
-.ficha3d { position: absolute; left: 14px; right: 14px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); max-width: 420px; margin: 0 auto; overflow: hidden; border-radius: 26px; background: #050505; border: 1px solid #ffffff2e; box-shadow: 0 30px 60px -14px #000, 0 0 60px #ff7a4514; transform: translateY(30px) scale(.97); opacity: 0; pointer-events: none; transition: transform .4s var(--ease), opacity .3s var(--ease); }
+.ficha3d { position: absolute; left: 14px; right: 14px; bottom: calc(30px + env(safe-area-inset-bottom, 0px)); max-width: 420px; margin: 0 auto; overflow: hidden; border-radius: 26px; background: #050505; border: 1px solid #ffffff2e; box-shadow: 0 30px 60px -14px #000, 0 0 60px #ff7a4514; transform: translateY(30px) scale(.97); opacity: 0; pointer-events: none; transition: transform .4s var(--ease), opacity .3s var(--ease); }
 .app.modo-3d .ficha3d.on { transform: none; opacity: 1; pointer-events: auto; }
 .ficha3d-top { position: relative; height: 118px; }
 .ficha3d-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -435,7 +450,8 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
   <button class="ok" type="button" id="v-ok">Entendido</button>
 </dialog>
 
-<script type="module">
+<script type="module">if (window.__vencida) throw new Error("Muestra vencida");
+
 import { initTerraza3D } from "./js/terraza3d.js";
 import { fetchClima, fallbackWeather, WEATHER_PRESETS } from "./js/clima.js";
 
@@ -511,7 +527,7 @@ rollo.insertAdjacentHTML("beforeend", SECCIONES.map((s, i) => `<section class="p
   <div class="tx"><span class="eti">Gómez Palacio, Dgo.</span><h2>Te esperamos<em>en la terraza</em></h2>
   <ul class="horario">${[1, 2, 3, 4, 5, 6, 0].map((d) => `<li class="${d === hoyDia ? "hoy" : ""}"><b>${DIAS[d]}</b><span>${HORARIO[d] ? `${hora(HORARIO[d][0])} a ${hora(HORARIO[d][1])}` : "Cerrado"}</span></li>`).join("")}</ul>
   <div class="botones"><button class="boton lleno" type="button" data-resv>Reservar mesa</button><button class="boton linea" type="button" data-ir3d hidden>Ver la terraza en 3D</button><div class="par"><a class="boton linea" href="tel:+528711755967">Llamar</a><a class="boton linea" href="https://www.google.com/maps/search/?api=1&query=25.5710143,-103.4985257" target="_blank" rel="noopener">Cómo llegar</a></div></div>
-  <small class="creditos">Muestra para Terraza Allende hecha por SSS Solutions. Menú, precios y fotos de ejemplo; horario tomado de internet.<br>Fotos: Atsme, Paul Lowry, Pequeño mar, Gatorfan252525, Alejandra Mendoza Santillán y Sarah Stierch, en Wikimedia Commons (CC BY / CC BY-SA).</small></div></section>`);
+  <small class="creditos">Muestra para Terraza Allende hecha por SSS Solutions. Menú, precios y fotos de ejemplo; horario tomado de internet.<br>Fotos: Atsme, Paul Lowry, Pequeño mar, Gatorfan252525, Alejandra Mendoza Santillán y Sarah Stierch, en Wikimedia Commons (CC BY / CC BY-SA).<br>© 2026 SSS Solutions. Todos los derechos reservados.</small></div></section>`);
 
 $("#nav").innerHTML = SECCIONES.map((s, i) => `<button type="button" data-ir="${s.id}"><small>${dos(i + 1)}</small>${esc(s.nombre)}</button>`).join("")
   + `<button type="button" class="carrito" id="carrito">Mi pedido · <span id="carrito-n">0</span></button>`;
@@ -700,5 +716,14 @@ if (location.hash === "#3d") setTimeout(() => setModo3D(true, "mesa"), 80);
 
 if (location.hash.length > 1 && $("#s-" + location.hash.slice(1))) setTimeout(() => $("#s-" + location.hash.slice(1)).scrollIntoView(), 50);
 </script>
+<div class="marca-agua" aria-hidden="true">Propuesta de SSS Solutions para Terraza Allende · Vence el 10 dic</div>
+<script>(function(){
+if(window.__vencida){document.body.innerHTML='<div class="vencida"><div><b>SSS Solutions</b><h1>Esta muestra<br>ya venció</h1><p>Pídela de nuevo a SSS Solutions.</p><small>© 2026 SSS Solutions. Todos los derechos reservados.</small></div></div>';return;}
+var no=function(e){e.preventDefault();};
+document.addEventListener("contextmenu",no);
+document.addEventListener("dragstart",function(e){if(e.target&&e.target.tagName==="IMG")e.preventDefault();});
+document.addEventListener("selectstart",function(e){var t=e.target;if(!(t&&t.closest&&t.closest("input,textarea")))e.preventDefault();});
+document.addEventListener("keydown",function(e){if((e.ctrlKey||e.metaKey)&&/^[supc]$/i.test(e.key))e.preventDefault();});
+})();</script>
 </body>
 </html>

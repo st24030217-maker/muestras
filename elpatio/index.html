@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El Patio Food Park · Menús</title>
+<meta name="description" content="Todos los menús de El Patio Food Park en un solo lugar. Muestra con datos de ejemplo.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#1d4b3a">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Figtree:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Boceto para El Patio Food Park: un solo QR en la mesa abre todos los menús.
+   Colores de patio de noche: papel kraft, verde botella, tinta café y amarillo foco solo para detalles. */
+:root {
+  --kraft: #efe4cf; --kraft-2: #e6d7bb; --papel: #faf5ea;
+  --tinta: #2b1d14; --tinta-2: #6b5a4b; --linea: #d9c8a8;
+  --verde: #1d4b3a; --verde-2: #14382b; --foco: #f0b429; --chile: #a8321f;
+  --fd: "Anton", Impact, "Arial Narrow", sans-serif;
+  --fb: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ease: cubic-bezier(.2,.8,.2,1);
+  --sombra: 0 1px 0 #fff8 inset, 0 12px 28px -18px #3b2a1a80;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--kraft); color: var(--tinta); font: 17px/1.45 var(--fb); -webkit-font-smoothing: antialiased; }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--verde); outline-offset: 3px; }
+img { display: block; max-width: 100%; }
+.envoltura { max-width: 34rem; margin: 0 auto; padding: 0 16px; }
+
+/* ---------- Encabezado ---------- */
+.cab { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--kraft) 92%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid #2b1d1414; padding-top: env(safe-area-inset-top); }
+.cab .envoltura { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; }
+.marca { display: flex; align-items: baseline; gap: 8px; line-height: 1; }
+.marca b { font: 400 30px/1 var(--fd); letter-spacing: .01em; color: var(--verde); }
+.marca span { font-weight: 700; font-size: 14px; color: var(--tinta-2); }
+.mesa { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--verde); color: #fff; font-weight: 700; font-size: 15px; border: 0; }
+.mesa i { width: 8px; height: 8px; border-radius: 50%; background: var(--foco); }
+
+/* ---------- Portada: mosaico de la comida de los locales ---------- */
+.portada { padding: 18px 0 6px; }
+.mosaico { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 1fr 1fr; gap: 6px; height: 230px; border-radius: 22px; overflow: hidden; }
+.mosaico img { width: 100%; height: 100%; object-fit: cover; }
+.mosaico img:first-child { grid-row: 1 / 3; }
+.portada h1 { margin: 18px 0 4px; font: 400 clamp(44px, 13vw, 60px)/.95 var(--fd); letter-spacing: .005em; text-transform: uppercase; }
+.portada p { margin: 0; color: var(--tinta-2); font-size: 17px; }
+.dato { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 15px; font-weight: 600; color: var(--tinta-2); }
+.dato .abierto { color: var(--verde); }
+
+/* ---------- Filtros ---------- */
+.filtros { position: sticky; top: calc(60px + env(safe-area-inset-top)); z-index: 9; background: var(--kraft); padding: 12px 0 10px; }
+.filtros .fila { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
+.filtros .fila::-webkit-scrollbar { display: none; }
+.chip { flex: none; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--linea); background: var(--papel); font-weight: 700; font-size: 15px; transition: background .2s, color .2s, border-color .2s; }
+.chip[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+
+/* ---------- Locales ---------- */
+.locales { display: grid; gap: 12px; padding: 6px 0 26px; }
+.local { display: grid; grid-template-columns: 104px 1fr auto; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 10px; border: 0; border-radius: 22px; background: var(--papel); box-shadow: var(--sombra); transition: transform .15s var(--ease); }
+.local:active { transform: scale(.98); }
+.local img { width: 104px; height: 104px; border-radius: 16px; object-fit: cover; }
+.local h2 { margin: 0; font: 400 25px/1.05 var(--fd); letter-spacing: .01em; }
+.local p { margin: 4px 0 6px; font-size: 15px; color: var(--tinta-2); line-height: 1.3; }
+.local small { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--verde); }
+.local small i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+.local .ir { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--kraft); color: var(--tinta); margin-right: 4px; }
+.local[hidden] { display: none; }
+
+/* ---------- Menú de un local (pantalla encima) ---------- */
+.menu { position: fixed; inset: 0; z-index: 30; background: var(--kraft); overflow-y: auto; overscroll-behavior: contain; visibility: hidden; opacity: 0; transform: translateY(24px); transition: opacity .25s var(--ease), transform .3s var(--ease), visibility 0s .3s; }
+.menu.abierto { visibility: visible; opacity: 1; transform: none; transition: opacity .25s var(--ease), transform .3s var(--ease); }
+.menu-foto { position: relative; height: 260px; }
+.menu-foto img { width: 100%; height: 100%; object-fit: cover; }
+.menu-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #2b1d1466 0%, transparent 35%, transparent 55%, #2b1d14e6 100%); }
+.volver { position: absolute; z-index: 2; top: calc(12px + env(safe-area-inset-top)); left: 12px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 10px; border-radius: 999px; border: 0; background: var(--papel); font-weight: 700; font-size: 15px; box-shadow: 0 6px 16px -8px #0008; }
+.menu-titulo { position: absolute; z-index: 2; left: 16px; right: 16px; bottom: 16px; color: #fff; }
+.menu-titulo h2 { margin: 0; font: 400 46px/.95 var(--fd); text-transform: uppercase; }
+.menu-titulo p { margin: 6px 0 0; font-size: 16px; color: #ffffffe6; }
+.seccion { margin: 22px 0 6px; font-size: 15px; font-weight: 800; color: var(--chile); }
+.platillo { display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--linea); }
+.platillo b { font-size: 18px; font-weight: 700; line-height: 1.25; }
+.platillo span { grid-column: 1; font-size: 14.5px; color: var(--tinta-2); }
+.platillo em { grid-column: 1; font-style: normal; font-weight: 800; font-size: 18px; }
+.mas { grid-column: 2; grid-row: 1 / 4; width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--verde); color: #fff; font-size: 26px; line-height: 1; display: grid; place-items: center; transition: transform .15s var(--ease), background .2s; }
+.mas:active { transform: scale(.88); }
+.mas.listo { background: var(--foco); color: var(--tinta); }
+.menu .espacio { height: 120px; }
+
+/* Barra para pedir por WhatsApp (solo cuando hay algo en el pedido) */
+.pedir { position: fixed; z-index: 31; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(14px + env(safe-area-inset-bottom)); background: linear-gradient(transparent, var(--kraft) 30%); visibility: hidden; opacity: 0; transition: opacity .2s, visibility 0s .2s; }
+.pedir.ver { visibility: visible; opacity: 1; transition: opacity .2s; }
+.pedir button { width: 100%; max-width: 34rem; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding: 0 20px; border: 0; border-radius: 20px; background: #15803d; color: #fff; font-weight: 800; font-size: 17px; box-shadow: 0 16px 32px -14px #14532dcc; }
+.pedir button span:first-child { display: inline-flex; align-items: center; gap: 10px; }
+
+/* Vista previa de cómo le llega el pedido al local */
+dialog { border: 0; border-radius: 24px; padding: 22px; width: calc(100% - 24px); max-width: 26rem; background: var(--papel); color: var(--tinta); box-shadow: 0 30px 60px -20px #000a; }
+dialog::backdrop { background: #2b1d14a6; }
+dialog h3 { margin: 0 0 6px; font: 400 30px/1 var(--fd); text-transform: uppercase; }
+dialog p { margin: 0 0 14px; color: var(--tinta-2); font-size: 15px; }
+.burbuja { background: #dcf8c6; border-radius: 14px 14px 14px 4px; padding: 12px 14px; font-size: 15px; white-space: pre-line; box-shadow: 0 1px 1px #0001; }
+.cerrar { margin-top: 16px; width: 100%; min-height: 50px; border: 0; border-radius: 14px; background: var(--tinta); color: var(--papel); font-weight: 700; }
+
+/* ---------- Pie ---------- */
+.pie { padding: 10px 0 40px; font-size: 13px; color: var(--tinta-2); }
+.pie .aviso { display: block; padding: 12px 14px; border-radius: 14px; background: var(--kraft-2); color: var(--tinta); font-size: 14px; margin-bottom: 14px; }
+.pie a { color: inherit; }
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="cab">
+  <div class="envoltura">
+    <div class="marca"><b>El Patio</b><span>Food Park</span></div>
+    <button class="mesa" type="button" id="mesa"><i></i><span id="mesa-t">Mesa 12</span></button>
+  </div>
+</header>
+
+<main class="envoltura">
+  <section class="portada" aria-label="El Patio Food Park">
+    <div class="mosaico">
+      <img src="img/tacos.jpg" alt="Tacos al pastor" width="700" height="520">
+      <img src="img/burger.jpg" alt="Hamburguesa" width="500" height="260" loading="lazy">
+      <img src="img/cerveza.jpg" alt="Cervezas" width="500" height="260" loading="lazy">
+    </div>
+    <h1>¿Qué se te antoja hoy?</h1>
+    <p>Todos los menús del patio en un solo lugar. Escoge un local y pide desde tu mesa.</p>
+    <div class="dato"><span class="abierto">Abierto hasta las 12:00 am</span><span>5 locales</span></div>
+  </section>
+
+  <nav class="filtros" aria-label="Filtrar locales">
+    <div class="fila" id="filtros"></div>
+  </nav>
+
+  <section class="locales" id="locales" aria-label="Locales"></section>
+
+  <footer class="pie">
+    <span class="aviso">Muestra con locales y precios de ejemplo. Con los menús reales de El Patio queda igual, con sus nombres, fotos y precios.</span>
+    Fotos: T.Tseng (CC BY 2.0), Thiago Fior de Castro (dominio público), BullDawg2021 (CC BY 4.0), David Blaikie (CC BY 2.0) y Ocdp (CC0), en Wikimedia Commons.<br>
+    Hecho por <a href="https://portafolio-salinas-serrano-sebastia.vercel.app" target="_blank" rel="noopener">sss.solutions</a>
+  </footer>
+</main>
+
+<section class="menu" id="menu" aria-hidden="true" aria-labelledby="m-nombre">
+  <div class="menu-foto">
+    <img id="m-foto" src="img/tacos.jpg" alt="">
+    <button class="volver" type="button" id="volver">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      Todos los locales
+    </button>
+    <div class="menu-titulo"><h2 id="m-nombre"></h2><p id="m-desc"></p></div>
+  </div>
+  <div class="envoltura" id="m-lista"></div>
+  <div class="espacio"></div>
+</section>
+
+<div class="pedir" id="pedir">
+  <button type="button" id="pedir-btn">
+    <span><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg><span id="pedir-t">Pedir por WhatsApp</span></span>
+    <span id="pedir-total">$0</span>
+  </button>
+</div>
+
+<dialog id="vista" aria-labelledby="v-t">
+  <h3 id="v-t">Así le llega al local</h3>
+  <p>El pedido sale directo al WhatsApp de este local, con tu número de mesa. En esta muestra no se manda nada.</p>
+  <div class="burbuja" id="v-msg"></div>
+  <button class="cerrar" type="button" id="v-cerrar">Entendido</button>
+</dialog>
+
+<script>
+// Locales de ejemplo: con los datos reales de El Patio solo se cambia esta lista.
+const LOCALES = [
+  { id: "tacos", nombre: "Tacos El Güero", que: "Tacos al pastor, bistec y gringas", cat: "Tacos", foto: "img/tacos.jpg",
+    menu: { "Tacos": [["Taco al pastor", "Con piña, cilantro y cebolla", 25], ["Taco de bistec", "Tortilla de maíz o harina", 28], ["Orden de 5 al pastor", "Con salsas de la casa", 115]],
+            "Especiales": [["Gringa", "Harina, pastor y queso", 70], ["Volcán", "Tostada, queso y pastor", 45]] } },
+  { id: "smash", nombre: "La Smash", que: "Hamburguesas smash y papas", cat: "Hamburguesas", foto: "img/burger.jpg",
+    menu: { "Hamburguesas": [["Smash sencilla", "Carne, queso americano y cebolla", 95], ["Smash doble", "Dos carnes y doble queso", 135], ["La del Patio", "Doble, tocino y jalapeño", 155]],
+            "Para acompañar": [["Papas a la francesa", "Con sal de la casa", 50], ["Papas con queso", "Queso cheddar y tocino", 75]] } },
+  { id: "pizza", nombre: "Pizzería Brasa", que: "Pizza por rebanada o completa", cat: "Pizza", foto: "img/pizza.jpg",
+    menu: { "Por rebanada": [["Pepperoni", "Rebanada grande", 45], ["Hawaiana", "Jamón y piña", 45], ["Tres quesos", "Mozzarella, cheddar y parmesano", 50]],
+            "Completas": [["Pepperoni grande", "8 rebanadas", 260], ["Especial de la casa", "Pepperoni, champiñón y chorizo", 290]] } },
+  { id: "barra", nombre: "La Barra", que: "Cervezas, micheladas y refrescos", cat: "Bebidas", foto: "img/cerveza.jpg",
+    menu: { "Cervezas": [["Cerveza clara", "Media", 45], ["Cerveza artesanal", "De la región", 70], ["Cubeta de 6", "Clara u oscura", 240]],
+            "Sin alcohol": [["Agua fresca", "Jamaica u horchata", 30], ["Refresco", "Lata", 30]] } },
+  { id: "churros", nombre: "Churrería Doña Lupe", que: "Churros, rellenos y café", cat: "Postres", foto: "img/churros.jpg",
+    menu: { "Churros": [["Orden de 3", "Con azúcar y canela", 40], ["Churro relleno", "Cajeta o chocolate", 30], ["Bolsa de 10", "Para compartir", 110]],
+            "Para tomar": [["Chocolate caliente", "Con leche", 40], ["Café de olla", "Con canela", 35]] } },
+];
+const $ = (s) => document.querySelector(s);
+const dinero = (n) => "$" + n.toLocaleString("es-MX");
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const flecha = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>';
+
+// La mesa viene en el QR (?mesa=12); cada mesa tiene su propio código.
+const mesa = new URLSearchParams(location.search).get("mesa") || "12";
+$("#mesa-t").textContent = "Mesa " + mesa;
+$("#mesa").addEventListener("click", () => alert("Cada mesa tiene su propio QR, así el local sabe a dónde llevar el pedido."));
+
+// Filtros
+const cats = ["Todo", ...new Set(LOCALES.map((l) => l.cat))];
+$("#filtros").innerHTML = cats.map((c, i) => `<button class="chip" type="button" data-cat="${esc(c)}" aria-pressed="${i ? "false" : "true"}">${esc(c)}</button>`).join("");
+$("#filtros").addEventListener("click", (e) => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  document.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  document.querySelectorAll(".local").forEach((l) => (l.hidden = b.dataset.cat !== "Todo" && l.dataset.cat !== b.dataset.cat));
+});
+
+// Lista de locales
+$("#locales").innerHTML = LOCALES.map((l) => `<button class="local" type="button" data-id="${l.id}" data-cat="${esc(l.cat)}">
+  <img src="${l.foto}" alt="" width="104" height="104" loading="lazy">
+  <div><h2>${esc(l.nombre)}</h2><p>${esc(l.que)}</p><small><i></i>Abierto</small></div>
+  <span class="ir">${flecha}</span></button>`).join("");
+
+// Menú de un local
+let actual = null, pedido = [];
+function abrir(id, empujar = true) {
+  actual = LOCALES.find((l) => l.id === id); if (!actual) return;
+  pedido = [];
+  $("#m-foto").src = actual.foto; $("#m-nombre").textContent = actual.nombre; $("#m-desc").textContent = actual.que;
+  $("#m-lista").innerHTML = Object.entries(actual.menu).map(([sec, xs]) => `<p class="seccion">${esc(sec)}</p>` + xs.map(([n, d, p]) =>
+    `<div class="platillo"><b>${esc(n)}</b><span>${esc(d)}</span><em>${dinero(p)}</em><button class="mas" type="button" data-n="${esc(n)}" data-p="${p}" aria-label="Agregar ${esc(n)}">+</button></div>`).join("")).join("");
+  $("#menu").classList.add("abierto"); $("#menu").setAttribute("aria-hidden", "false"); $("#menu").scrollTop = 0;
+  document.body.style.overflow = "hidden";
+  barra();
+  if (empujar) history.pushState({ local: id }, "", "#" + id);
+}
+function cerrar() {
+  $("#menu").classList.remove("abierto"); $("#menu").setAttribute("aria-hidden", "true");
+  document.body.style.overflow = ""; pedido = []; barra();
+}
+$("#locales").addEventListener("click", (e) => { const b = e.target.closest(".local"); if (b) abrir(b.dataset.id); });
+$("#volver").addEventListener("click", () => (history.state && history.state.local ? history.back() : cerrar()));
+addEventListener("popstate", (e) => (e.state && e.state.local ? abrir(e.state.local, false) : cerrar()));
+
+// Pedido
+$("#m-lista").addEventListener("click", (e) => {
+  const b = e.target.closest(".mas"); if (!b) return;
+  pedido.push([b.dataset.n, Number(b.dataset.p)]);
+  b.classList.add("listo"); b.textContent = "1"; clearTimeout(b._t);
+  const veces = pedido.filter((x) => x[0] === b.dataset.n).length; b.textContent = String(veces);
+  b._t = setTimeout(() => { b.classList.remove("listo"); b.textContent = "+"; }, 900);
+  barra();
+});
+function barra() {
+  const total = pedido.reduce((a, x) => a + x[1], 0);
+  $("#pedir").classList.toggle("ver", pedido.length > 0 && $("#menu").classList.contains("abierto"));
+  $("#pedir-t").textContent = `Pedir ${pedido.length} por WhatsApp`;
+  $("#pedir-total").textContent = dinero(total);
+}
+$("#pedir-btn").addEventListener("click", () => {
+  const cuenta = {}; pedido.forEach(([n, p]) => { cuenta[n] = cuenta[n] || [0, p]; cuenta[n][0]++; });
+  const lineas = Object.entries(cuenta).map(([n, [c, p]]) => `${c} x ${n}  ${dinero(c * p)}`).join("\n");
+  const total = pedido.reduce((a, x) => a + x[1], 0);
+  $("#v-msg").textContent = `Pedido para ${actual.nombre}\nMesa ${mesa}\n\n${lineas}\n\nTotal: ${dinero(total)}`;
+  $("#vista").showModal();
+});
+$("#v-cerrar").addEventListener("click", () => $("#vista").close());
+
+// Abrir directo un local si el link trae #tacos, #smash…
+if (location.hash.length > 1) abrir(location.hash.slice(1), false);
+</script>
+</body>
+</html>

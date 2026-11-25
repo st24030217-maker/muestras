@@ -314,6 +314,68 @@ dialog h4 { margin: 0 0 10px; font: 900 28px/.95 var(--fd); letter-spacing: -.03
 dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
 .burbuja { background: #dcf8c6; color: #111; border-radius: 16px 16px 16px 4px; padding: 13px 15px; font-size: 15px; white-space: pre-line; }
 .ok { margin-top: 16px; width: 100%; min-height: 54px; border: 0; border-radius: 999px; background: var(--foco); color: #000; font: 900 13.5px/1 var(--fd); letter-spacing: .07em; text-transform: uppercase; }
+/* ---------- Cualquier pantalla: celular, celular acostado, iPad, computadora ----------
+   Los tamaños grandes se calculan con el ancho Y el alto, así nada se corta en pantallas anchas o bajitas. */
+.nav .fila { justify-content: safe center; }
+.cinta { font-size: clamp(110px, 20vh, 260px); }
+.sello { width: clamp(110px, 18vh, 230px); height: clamp(110px, 18vh, 230px); }
+.entrada .logo { width: 66%; height: 66%; }
+.entrada h1 { font-size: clamp(32px, min(10.2vw, 6.4vh), 112px); }
+.rest .num { font-size: clamp(72px, min(41vw, 19vh), 270px); }
+.rest h2.g { --tam: clamp(52px, min(20vw, 13vh), 180px); }
+.rest h2.m { --tam: clamp(44px, min(15.5vw, 10vh), 140px); }
+.rest h2.s { --tam: clamp(38px, min(12.6vw, 8vh), 112px); }
+.rest .info { left: max(18px, 5vw); right: max(18px, 5vw); max-width: 760px; }
+.rest .banda div { font-size: clamp(19px, min(2.6vw, 3vh), 34px); }
+.pronto b { font-size: clamp(36px, min(11.2vw, 7vh), 100px); }
+
+@media (min-width: 700px) {
+  .app, .app.modo-3d { max-width: 100%; box-shadow: none; }
+  .cab { padding-left: 24px; padding-right: 24px; }
+  .barras { left: 24px; right: 24px; }
+  .entrada p { font-size: 18px; max-width: 34ch; }
+  .datos b { font-size: 36px; } .datos small { font-size: 11px; } .datos div { padding: 14px 22px; }
+  .botones { max-width: 440px; }
+  .boton { min-height: 54px; font-size: 14px; } .boton.lleno { min-height: 64px; font-size: 16px; }
+  .rest .num { left: 24px; }
+  .rest .cat { font-size: 13px; }
+  .rest .nos { font-size: 19px; max-width: 38ch; }
+  .rest .acciones { max-width: 560px; }
+  .rest .ver { min-height: 64px; font-size: 17px; } .rest .ir3d { width: 64px; height: 64px; }
+  .rest::after { background:
+    linear-gradient(180deg, #000000cc 0%, #00000000 24%, #00000000 38%, #000000d9 66%, #000 100%),
+    linear-gradient(90deg, #00000099 0%, #00000000 60%); }
+  .nav button { min-height: 46px; padding: 0 18px; font-size: 13px; }
+  .hoja { max-width: 600px; }
+  .pedir { max-width: 572px; }
+  .hoja-cab { padding-top: 90px; }
+  .platillo b { font-size: 20px; } .platillo em { font-size: 24px; }
+  .pronto p { font-size: 19px; }
+  .ficha3d { max-width: 460px; }
+}
+
+/* Pantallas horizontales: la cinta va menos inclinada para no tapar el texto */
+@media (min-aspect-ratio: 1/1) { .rest .banda { transform: rotate(-3deg); top: 36%; } }
+
+/* Celular acostado o pantallas bajitas: se quita lo que no cabe */
+@media (max-height: 560px) {
+  .entrada { padding-top: 56px; padding-bottom: 84px; }
+  .sello, .datos, .baja, .entrada p { display: none; }
+  .botones { margin-top: 14px; flex-direction: row; max-width: 640px; }
+  .botones .boton.lleno { min-height: 48px; flex: 1.3; }
+  .rest .num { top: calc(54px + env(safe-area-inset-top, 0px)); }
+  .rest .banda { top: 22%; }
+  .rest .nos { display: none; }
+  .rest .info { bottom: calc(70px + env(safe-area-inset-bottom, 0px)); }
+  .rest .acciones { margin-top: 10px; }
+  .rest .ver, .rest .ir3d { min-height: 48px; height: 48px; } .rest .ir3d { width: 48px; }
+  .nav { padding-top: 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+  .nav button { min-height: 38px; }
+  .hoja { max-height: 96%; }
+  .hoja-cab { padding-top: 40px; } .hoja-cab p { display: none; }
+  .pronto .creditos { display: none; }
+  .pronto .botones { margin-top: 14px; }
+}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; } }
 </style>
 </head>

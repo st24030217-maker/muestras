@@ -17,6 +17,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%23ff7a45'/%3E%3Ctext x='32' y='42' font-family='Arial' font-weight='900' font-size='28' text-anchor='middle' fill='%23000'%3ETA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,700;0,800;0,900;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{ "imports": { "three": "./js/three.module.min.js" } }</script>
 <style>
 /* Terraza Allende (Gómez Palacio). Propuesta: menú por QR en cada mesa y pedidos por WhatsApp.
    Cartel de noche: negro, blanco y terracota (por la terraza). El verde es solo el de WhatsApp. */
@@ -226,6 +227,69 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
 .burbuja { background: #dcf8c6; color: #111; border-radius: 16px 16px 16px 4px; padding: 13px 15px; font-size: 15px; white-space: pre-line; }
 .ok { margin-top: 16px; width: 100%; min-height: 54px; border: 0; border-radius: 999px; background: var(--foco); color: #000; font: 900 13.5px/1 var(--fd); letter-spacing: .07em; text-transform: uppercase; }
 
+/* ---------- Mapa 3D (modelo de ejemplo de la terraza) ---------- */
+.escena3d { position: absolute; inset: 0; z-index: 1; transition: opacity .5s var(--ease); pointer-events: none; }
+.app.en-historias .escena3d { opacity: 0; }
+.app.modo-3d .escena3d { pointer-events: auto; opacity: 1; }
+#gl3d { display: block; width: 100%; height: 100%; touch-action: none; }
+.velo3d { position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 40%, #00000040 0%, #000000b3 70%, #000000f0 100%), linear-gradient(180deg, #000000a6 0%, transparent 30%, transparent 60%, #000 100%); transition: opacity .5s var(--ease); pointer-events: none; }
+.app.modo-3d .velo3d { opacity: 0; }
+.app.con3d .entrada .fondo, .app.con3d .entrada::before { display: none; }
+.app.modo-3d .rollo { opacity: 0; pointer-events: none; }
+.rollo { transition: opacity .35s var(--ease); }
+.app.modo-3d .nav, .app.modo-3d .barras { opacity: 0; pointer-events: none; }
+.nav { transition: opacity .3s; }
+.app.modo-3d .marca { opacity: 1; transform: none; }
+.cab-der { display: inline-flex; align-items: center; gap: 6px; }
+.modo-btn { display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 0 13px; border-radius: 999px; border: 1px solid #ffffff3d; background: #000000a6; color: var(--blanco); font: 800 12px/1 var(--fd); letter-spacing: .05em; text-transform: uppercase; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background .2s, color .2s, border-color .2s, transform .12s var(--ease); }
+.modo-btn:active { transform: scale(.95); }
+.app.modo-3d .modo-btn { background: var(--foco); color: #000; border-color: var(--foco); }
+@media (hover: hover) and (pointer: fine) { .modo-btn:hover { border-color: var(--foco); } }
+@media (max-width: 380px) { .marca b { display: none; } }
+
+.pins3d { position: absolute; inset: 0; pointer-events: none; overflow: hidden; opacity: 0; transition: opacity .35s var(--ease); }
+.app.modo-3d .pins3d { opacity: 1; }
+.pin3d { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 0 12px 0 10px; border-radius: 999px; border: 1px solid #ffffff40; background: #000000d9; color: var(--blanco); font: 800 12px/1 var(--fd); letter-spacing: .03em; text-transform: uppercase; white-space: nowrap; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); box-shadow: 0 10px 24px -6px #000000e0; transition: background .2s, color .2s, border-color .2s, opacity .2s; }
+.pin3d::after { content: ""; position: absolute; left: 50%; top: 100%; transform: translateX(-50%); width: 1.5px; height: 10px; background: linear-gradient(var(--foco), transparent); }
+.pin3d i { width: 7px; height: 7px; border-radius: 50%; background: var(--foco); flex: none; box-shadow: 0 0 10px var(--foco); }
+.pin3d.tuya, .pin3d.on { background: var(--foco); color: #000; border-color: var(--foco); box-shadow: 0 0 30px #ff7a4566, 0 10px 24px -6px #000; }
+.pin3d.tuya i, .pin3d.on i { background: #000; box-shadow: none; }
+
+.hud3d { position: absolute; z-index: 18; inset: 0; pointer-events: none; opacity: 0; transition: opacity .35s var(--ease); }
+.hud3d::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 150px; background: linear-gradient(#000000d9, transparent); }
+.app.modo-3d .hud3d { opacity: 1; }
+.vistas3d { position: absolute; top: calc(68px + env(safe-area-inset-top, 0px)); left: 14px; right: 14px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
+.vistas3d-izq { display: flex; border: 1px solid #ffffff33; border-radius: 999px; padding: 3px; background: #000000b3; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.vistas3d button { min-height: 32px; padding: 0 12px; border-radius: 999px; border: 0; background: transparent; color: #ffffffb3; font: 800 11px/1 var(--fd); letter-spacing: .06em; text-transform: uppercase; }
+.app.modo-3d .vistas3d button { pointer-events: auto; }
+.vistas3d-izq button.on { background: var(--blanco); color: #000; }
+.vistas3d .clima-btn { display: inline-flex; align-items: center; gap: 7px; min-height: 40px; padding: 0 13px; border: 1px solid #ffffff33; background: #000000b3; color: var(--blanco); font-size: 12px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.clima-btn svg { color: var(--foco); flex: none; }
+.clima-btn .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--foco); }
+.clima-btn.manual .dot { background: #fff; }
+.clima-panel { position: absolute; top: calc(118px + env(safe-area-inset-top, 0px)); right: 14px; left: 14px; max-width: 380px; margin-left: auto; padding: 14px; border-radius: 20px; background: #050505f2; border: 1px solid #ffffff26; box-shadow: 0 18px 36px -10px #000000d9; opacity: 0; transform: translateY(-8px) scale(.98); transform-origin: top right; pointer-events: none; transition: opacity .22s var(--ease), transform .22s var(--ease); }
+.app.modo-3d .clima-panel.on { opacity: 1; transform: none; pointer-events: auto; }
+.clima-info { font-size: 12.5px; color: #ffffffb3; margin: 0 0 10px; }
+.clima-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.clima-chips button { min-height: 32px; padding: 0 11px; border-radius: 999px; border: 1px solid #ffffff2e; background: #ffffff0d; color: var(--blanco); font: 800 11px/1 var(--fd); letter-spacing: .06em; text-transform: uppercase; }
+.clima-chips button.on { background: var(--foco); color: #000; border-color: var(--foco); }
+.tip3d { position: absolute; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 9px 15px; border-radius: 999px; background: #000000c7; border: 1px solid #ffffff26; font: 800 11px/1 var(--fd); letter-spacing: .1em; text-transform: uppercase; color: #ffffffd9; white-space: nowrap; transition: opacity .4s; }
+.tip3d.hide { opacity: 0; }
+.ficha3d { position: absolute; left: 14px; right: 14px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); max-width: 420px; margin: 0 auto; overflow: hidden; border-radius: 26px; background: #050505; border: 1px solid #ffffff2e; box-shadow: 0 30px 60px -14px #000, 0 0 60px #ff7a4514; transform: translateY(30px) scale(.97); opacity: 0; pointer-events: none; transition: transform .4s var(--ease), opacity .3s var(--ease); }
+.app.modo-3d .ficha3d.on { transform: none; opacity: 1; pointer-events: auto; }
+.ficha3d-top { position: relative; height: 118px; }
+.ficha3d-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ficha3d-top::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #00000026, #050505 98%); }
+.ficha3d-txt { position: absolute; z-index: 2; left: 16px; right: 60px; bottom: 2px; }
+.ficha3d .cat { display: inline-flex; align-items: center; gap: 7px; font: 800 11px/1 var(--fd); letter-spacing: .12em; text-transform: uppercase; color: var(--foco); }
+.ficha3d .cat i { width: 6px; height: 6px; border-radius: 50%; background: var(--foco); }
+.ficha3d h3 { margin: 6px 0 0; font: 900 30px/.92 var(--fd); letter-spacing: -.045em; text-transform: uppercase; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ficha3d p { margin: 8px 16px 14px; font-size: 14px; color: #ffffffb3; line-height: 1.4; }
+.ficha3d-x { position: absolute; z-index: 3; top: 12px; right: 12px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: #000000a6; color: var(--blanco); display: grid; place-items: center; }
+.ficha3d-ver { display: flex; align-items: center; justify-content: space-between; width: calc(100% - 24px); margin: 0 12px 12px; min-height: 52px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--blanco); color: #000; font: 900 14.5px/1 var(--fd); letter-spacing: .05em; text-transform: uppercase; transition: transform .12s var(--ease), background .2s; }
+.ficha3d-ver:active { transform: scale(.97); }
+@media (hover: hover) and (pointer: fine) { .ficha3d-ver:hover { background: var(--foco); } }
+
 /* ---------- iPad y computadora ---------- */
 @media (min-width: 700px) {
   .cab { padding-left: 24px; padding-right: 24px; } .barras { left: 24px; right: 24px; }
@@ -269,10 +333,53 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
 <body>
 <div class="app" id="app">
 
+  <div class="escena3d" id="escena3d">
+    <canvas id="gl3d" aria-label="Modelo 3D de ejemplo de Terraza Allende"></canvas>
+    <div class="velo3d" aria-hidden="true"></div>
+    <div class="pins3d" id="pins3d"></div>
+  </div>
+
   <header class="cab">
     <button class="marca" type="button" id="ir-inicio" aria-label="Volver al inicio"><span class="mono" aria-hidden="true">TA</span><b>Terraza<br>Allende</b></button>
-    <button class="chip" type="button" id="mesa"><i></i><span id="mesa-t">Mesa 12</span></button>
+    <div class="cab-der">
+      <button class="modo-btn" type="button" id="toggle-3d" aria-pressed="false" hidden>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+        <span id="toggle-3d-t">Mapa 3D</span>
+      </button>
+      <button class="chip" type="button" id="mesa"><i></i><span id="mesa-t">Mesa 12</span></button>
+    </div>
   </header>
+
+  <div class="hud3d" id="hud3d" aria-hidden="true">
+    <div class="vistas3d" id="vistas3d">
+      <div class="vistas3d-izq">
+        <button type="button" class="on" data-vista="vista">General</button>
+        <button type="button" data-vista="entrada">Entrada</button>
+        <button type="button" data-vista="patio">Barra</button>
+      </div>
+      <button type="button" class="clima-btn" id="clima-btn" aria-expanded="false" aria-controls="clima-panel"><i class="dot"></i><span id="clima-t">Clima</span></button>
+    </div>
+    <div class="clima-panel" id="clima-panel" role="region" aria-label="Clima en Gómez Palacio">
+      <p class="clima-info" id="clima-info">Cargando el clima de Gómez Palacio...</p>
+      <div class="clima-chips" id="clima-chips">
+        <button type="button" class="on" data-clima="live">En vivo</button>
+        <button type="button" data-clima="day">Día</button>
+        <button type="button" data-clima="sunset">Atardecer</button>
+        <button type="button" data-clima="night">Noche</button>
+        <button type="button" data-clima="rain">Lluvia</button>
+      </div>
+    </div>
+    <div class="tip3d" id="tip3d">Modelo de ejemplo · Arrastra para girar</div>
+    <div class="ficha3d" id="ficha3d">
+      <div class="ficha3d-top">
+        <img class="ficha3d-img" id="f-foto" src="img/portada.jpg" alt="">
+        <div class="ficha3d-txt"><span class="cat"><i></i><span id="f-que"></span></span><h3 id="f-nombre"></h3></div>
+        <button class="ficha3d-x" type="button" id="f-cerrar" aria-label="Cerrar tarjeta"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      </div>
+      <p id="f-nos"></p>
+      <button class="ficha3d-ver" type="button" id="f-ver"><span id="f-ver-t">Ver menú</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
   <div class="barras" id="barras" aria-hidden="true"></div>
 
   <main class="rollo" id="rollo">
@@ -289,6 +396,7 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
       <p>Ve el menú y pide desde tu mesa. Te lo llevamos sin que te levantes.</p>
       <div class="botones">
         <button class="boton lleno" type="button" id="ver-menu">Ver el menú</button>
+        <button class="boton linea" type="button" id="entrar-3d" hidden>Recorrer la terraza en 3D</button>
         <div class="par">
           <a class="boton linea" href="tel:+528711755967">Llamar</a>
           <a class="boton linea" href="https://www.google.com/maps/search/?api=1&query=25.5710143,-103.4985257" target="_blank" rel="noopener">Cómo llegar</a>
@@ -327,7 +435,10 @@ dialog p { margin: 0 0 16px; color: #ffffffa6; font-size: 14.5px; }
   <button class="ok" type="button" id="v-ok">Entendido</button>
 </dialog>
 
-<script>
+<script type="module">
+import { initTerraza3D } from "./js/terraza3d.js";
+import { fetchClima, fallbackWeather, WEATHER_PRESETS } from "./js/clima.js";
+
 // Secciones y platillos: de ejemplo (no tenemos su menú). Horario: de su ficha en internet, por confirmar.
 const SECCIONES = [
   { id: "botanas", nombre: "Botanas", foto: "img/botanas.jpg", cinta: ["Alitas", "Boneless", "Nachos", "Para compartir"],
@@ -399,7 +510,7 @@ rollo.insertAdjacentHTML("beforeend", SECCIONES.map((s, i) => `<section class="p
   <div class="cinta c2" aria-hidden="true"><span>Terraza Allende</span><span>Terraza Allende</span><span>Terraza Allende</span></div>
   <div class="tx"><span class="eti">Gómez Palacio, Dgo.</span><h2>Te esperamos<em>en la terraza</em></h2>
   <ul class="horario">${[1, 2, 3, 4, 5, 6, 0].map((d) => `<li class="${d === hoyDia ? "hoy" : ""}"><b>${DIAS[d]}</b><span>${HORARIO[d] ? `${hora(HORARIO[d][0])} a ${hora(HORARIO[d][1])}` : "Cerrado"}</span></li>`).join("")}</ul>
-  <div class="botones"><button class="boton lleno" type="button" data-resv>Reservar mesa</button><div class="par"><a class="boton linea" href="tel:+528711755967">Llamar</a><a class="boton linea" href="https://www.google.com/maps/search/?api=1&query=25.5710143,-103.4985257" target="_blank" rel="noopener">Cómo llegar</a></div></div>
+  <div class="botones"><button class="boton lleno" type="button" data-resv>Reservar mesa</button><button class="boton linea" type="button" data-ir3d hidden>Ver la terraza en 3D</button><div class="par"><a class="boton linea" href="tel:+528711755967">Llamar</a><a class="boton linea" href="https://www.google.com/maps/search/?api=1&query=25.5710143,-103.4985257" target="_blank" rel="noopener">Cómo llegar</a></div></div>
   <small class="creditos">Muestra para Terraza Allende hecha por SSS Solutions. Menú, precios y fotos de ejemplo; horario tomado de internet.<br>Fotos: Atsme, Paul Lowry, Pequeño mar, Gatorfan252525, Alejandra Mendoza Santillán y Sarah Stierch, en Wikimedia Commons (CC BY / CC BY-SA).</small></div></section>`);
 
 $("#nav").innerHTML = SECCIONES.map((s, i) => `<button type="button" data-ir="${s.id}"><small>${dos(i + 1)}</small>${esc(s.nombre)}</button>`).join("")
@@ -503,6 +614,89 @@ function reservar() {
   $("#vista").showModal();
 }
 $("#v-ok").addEventListener("click", () => $("#vista").close());
+
+// ---------- Mapa 3D (modelo de ejemplo) ----------
+const ZONAS = {
+  mesa: { nombre: `Tu mesa · ${mesa}`, que: "Aquí estás", foto: "img/botanas.jpg", nos: "Pide desde tu mesa: el pedido le llega a la terraza con este número y te lo traen aquí.", ver: "Pedir desde aquí", accion: () => abrir("botanas") },
+  barra: { nombre: "La barra", que: "Bebidas", foto: "img/bebidas.jpg", nos: "Micheladas escarchadas, cubetas bien heladas y cantaritos.", ver: "Ver bebidas", accion: () => abrir("bebidas") },
+  parrilla: { nombre: "La parrilla", que: "Al carbón", foto: "img/cortes.jpg", nos: "Cortes y tacos al carbón, hechos a la vista.", ver: "Ver cortes", accion: () => abrir("cortes") },
+  pantalla: { nombre: "Pantalla", que: "Partidos", foto: "img/botanas.jpg", nos: "Los partidos en pantalla grande, con botana y chela.", ver: "Ver botanas", accion: () => abrir("botanas") },
+  entrada: { nombre: "La entrada", que: "Gómez Palacio, Dgo.", foto: "img/portada.jpg", nos: "Abierto de miércoles a lunes desde la tarde. Los martes descansamos.", ver: "Cómo llegar", accion: () => window.open("https://www.google.com/maps/search/?api=1&query=25.5710143,-103.4985257", "_blank", "noopener") },
+};
+let modo3d = false, zona3d = null, t3d = null;
+try {
+  t3d = initTerraza3D({ canvas: $("#gl3d"), pinsLayer: $("#pins3d"), mesa, onSelectLocal: (id) => mostrarFicha(id) });
+  t3d.setPinLabels(Object.fromEntries(Object.entries(ZONAS).map(([k, z]) => [k, k === "mesa" ? `Tu mesa ${mesa}` : z.nombre.replace(/^La /, "")])));
+  app.classList.add("con3d");
+  ["#toggle-3d", "#entrar-3d"].forEach((s) => ($(s).hidden = false));
+  document.querySelectorAll("[data-ir3d]").forEach((b) => (b.hidden = false));
+} catch (err) {
+  console.warn("WebGL no disponible:", err);
+}
+function mostrarFicha(id) {
+  const z = ZONAS[id]; if (!z) return;
+  zona3d = id;
+  $("#tip3d").classList.add("hide");
+  $("#f-foto").src = z.foto; $("#f-que").textContent = z.que; $("#f-nombre").textContent = z.nombre; $("#f-nos").textContent = z.nos; $("#f-ver-t").textContent = z.ver;
+  $("#ficha3d").classList.add("on");
+}
+function ocultarFicha() { zona3d = null; $("#ficha3d").classList.remove("on"); t3d?.clearSelection(); }
+function setModo3D(on, foco = null) {
+  modo3d = Boolean(on && t3d);
+  app.classList.toggle("modo-3d", modo3d);
+  app.classList.toggle("en-historias", !modo3d && app.classList.contains("dentro"));
+  $("#toggle-3d").setAttribute("aria-pressed", String(modo3d));
+  $("#toggle-3d-t").textContent = modo3d ? "Menú" : "Mapa 3D";
+  $("#hud3d").setAttribute("aria-hidden", String(!modo3d));
+  t3d?.setInteractive(modo3d);
+  if (modo3d && foco) t3d.selectLocal(foco); else { ocultarFicha(); cerrarClima(); }
+}
+$("#toggle-3d").addEventListener("click", () => setModo3D(!modo3d));
+$("#entrar-3d").addEventListener("click", () => setModo3D(true, "mesa"));
+document.querySelectorAll("[data-ir3d]").forEach((b) => b.addEventListener("click", () => setModo3D(true, "mesa")));
+$("#ir-inicio").addEventListener("click", () => setModo3D(false));
+$("#f-cerrar").addEventListener("click", ocultarFicha);
+$("#f-ver").addEventListener("click", () => zona3d && ZONAS[zona3d].accion());
+$("#gl3d").addEventListener("pointerdown", () => { if (modo3d) $("#tip3d").classList.add("hide"); cerrarClima(); });
+$("#vistas3d").addEventListener("click", (ev) => {
+  const b = ev.target.closest("[data-vista]"); if (!b) return;
+  cerrarClima(); ocultarFicha();
+  document.querySelectorAll("#vistas3d [data-vista]").forEach((x) => x.classList.toggle("on", x === b));
+  t3d?.setPreset(b.dataset.vista);
+});
+const enHistorias = new IntersectionObserver((xs) => xs.forEach((x) => {
+  if (x.isIntersecting) app.classList.toggle("en-historias", !modo3d && x.target.id !== "inicio");
+}), { root: rollo, threshold: 0.6 });
+document.querySelectorAll(".pant").forEach((p) => enHistorias.observe(p));
+
+// Clima real de Gómez Palacio (Open-Meteo) y presets
+const ICONOS = {
+  day: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+  sunset: '<path d="M17 18a5 5 0 0 0-10 0M12 9V2M4.2 10.2l1.4 1.4M2 18h20M19.8 10.2l-1.4 1.4M22 22H2"/>',
+  night: '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/>',
+  cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.7-9h1.8a4.5 4.5 0 1 1 0 9Z"/>',
+  rain: '<path d="M16 13V9a4 4 0 0 0-8 0M20 15.5A4.5 4.5 0 0 0 17.5 7H17A7 7 0 1 0 4 14.9M8 19v2M8 13v2M16 19v2M16 13v2M12 21v2M12 15v2"/>',
+  storm: '<path d="M19 16.9A5 5 0 0 0 18 7h-1.3A8 8 0 1 0 4 15.2"/><path d="m13 11-4 6h6l-4 6"/>',
+};
+const iconoClima = (w) => { const k = w.storm ? "storm" : w.rain > 0 ? "rain" : Number(w.clouds) > 65 ? "cloud" : ICONOS[w.phase] ? w.phase : "night";
+  return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONOS[k]}</svg>`; };
+let climaVivo = fallbackWeather(), climaModo = "live";
+function aplicarClima(w, modo) {
+  if (!w) return;
+  climaModo = modo; t3d?.setWeather(w);
+  $("#clima-btn").classList.toggle("manual", modo !== "live");
+  $("#clima-t").innerHTML = `${iconoClima(w)}${w.temp}°C`;
+  const origen = w.source === "open-meteo" ? "En vivo · Gómez Palacio" : modo === "live" ? "Hora local · Gómez Palacio" : "Vista previa";
+  $("#clima-info").textContent = `${origen} · ${w.label} · Viento ${w.wind} km/h · Nubes ${w.clouds}%`;
+  document.querySelectorAll("#clima-chips button").forEach((b) => b.classList.toggle("on", b.dataset.clima === modo));
+}
+function cerrarClima() { $("#clima-panel").classList.remove("on"); $("#clima-btn").setAttribute("aria-expanded", "false"); }
+aplicarClima(climaVivo, "live");
+fetchClima().then((w) => { climaVivo = w; if (climaModo === "live") aplicarClima(w, "live"); }).catch(() => {});
+$("#clima-btn").addEventListener("click", (ev) => { ev.stopPropagation(); const ab = $("#clima-panel").classList.toggle("on"); $("#clima-btn").setAttribute("aria-expanded", String(ab)); });
+$("#clima-chips").addEventListener("click", (ev) => { const b = ev.target.closest("[data-clima]"); if (b) aplicarClima(b.dataset.clima === "live" ? climaVivo : WEATHER_PRESETS[b.dataset.clima], b.dataset.clima); });
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && modo3d && zona3d && !$("#hoja").classList.contains("on")) ocultarFicha(); });
+if (location.hash === "#3d") setTimeout(() => setModo3D(true, "mesa"), 80);
 
 if (location.hash.length > 1 && $("#s-" + location.hash.slice(1))) setTimeout(() => $("#s-" + location.hash.slice(1)).scrollIntoView(), 50);
 </script>

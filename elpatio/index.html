@@ -58,14 +58,20 @@ img { display: block; max-width: 100%; }
 
 /* ---------- Locales ---------- */
 .locales { display: grid; gap: 12px; padding: 6px 0 26px; }
-.local { display: grid; grid-template-columns: 104px 1fr auto; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 10px; border: 0; border-radius: 22px; background: var(--papel); box-shadow: var(--sombra); transition: transform .15s var(--ease); }
+.local { display: block; padding: 16px; border-radius: 22px; background: var(--papel); box-shadow: var(--sombra); cursor: pointer; transition: transform .15s var(--ease); }
+.local-cab { display: flex; align-items: center; gap: 14px; }
+.local-cab img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; box-shadow: 0 0 0 3px var(--papel), 0 0 0 4.5px var(--linea); flex: none; }
+.local .nos { margin: 12px 0 14px; font-size: 16px; line-height: 1.45; color: var(--tinta); }
+.ver-menu { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 48px; border: 0; border-radius: 14px; background: var(--verde); color: #fff; font-weight: 800; font-size: 16px; }
+.local .cat { display: block; margin-top: 2px; font-size: 13.5px; font-weight: 600; color: var(--tinta-2); }
+.m-nos { margin: 18px 0 0; padding: 14px 16px; border-radius: 16px; background: var(--papel); font-size: 15.5px; line-height: 1.45; }
 .local:active { transform: scale(.98); }
-.local img { width: 104px; height: 104px; border-radius: 16px; object-fit: cover; }
+
 .local h2 { margin: 0; font: 400 25px/1.05 var(--fd); letter-spacing: .01em; }
-.local p { margin: 4px 0 6px; font-size: 15px; color: var(--tinta-2); line-height: 1.3; }
-.local small { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--verde); }
+
+.local small { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 13.5px; font-weight: 700; color: var(--verde); }
 .local small i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.local .ir { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--kraft); color: var(--tinta); margin-right: 4px; }
+
 .local[hidden] { display: none; }
 
 /* ---------- Menú de un local (pantalla encima) ---------- */
@@ -174,19 +180,19 @@ dialog p { margin: 0 0 14px; color: var(--tinta-2); font-size: 15px; }
 <script>
 // Locales de ejemplo: con los datos reales de El Patio solo se cambia esta lista.
 const LOCALES = [
-  { id: "tacos", nombre: "Tacos El Güero", que: "Tacos al pastor, bistec y gringas", cat: "Tacos", foto: "img/tacos.jpg",
+  { id: "tacos", nosotros: "Taquería de familia desde 1998. El pastor se marina desde la mañana y se asa al trompo frente a ti, con tortillas hechas a mano.", nombre: "Tacos El Güero", que: "Tacos al pastor, bistec y gringas", cat: "Tacos", foto: "img/tacos.jpg",
     menu: { "Tacos": [["Taco al pastor", "Con piña, cilantro y cebolla", 25], ["Taco de bistec", "Tortilla de maíz o harina", 28], ["Orden de 5 al pastor", "Con salsas de la casa", 115]],
             "Especiales": [["Gringa", "Harina, pastor y queso", 70], ["Volcán", "Tostada, queso y pastor", 45]] } },
-  { id: "smash", nombre: "La Smash", que: "Hamburguesas smash y papas", cat: "Hamburguesas", foto: "img/burger.jpg",
+  { id: "smash", nosotros: "Dos amigos que se enamoraron de las hamburguesas smash. Carne fresca aplastada en la plancha, pan suave y papas cortadas en casa.", nombre: "La Smash", que: "Hamburguesas smash y papas", cat: "Hamburguesas", foto: "img/burger.jpg",
     menu: { "Hamburguesas": [["Smash sencilla", "Carne, queso americano y cebolla", 95], ["Smash doble", "Dos carnes y doble queso", 135], ["La del Patio", "Doble, tocino y jalapeño", 155]],
             "Para acompañar": [["Papas a la francesa", "Con sal de la casa", 50], ["Papas con queso", "Queso cheddar y tocino", 75]] } },
-  { id: "pizza", nombre: "Pizzería Brasa", que: "Pizza por rebanada o completa", cat: "Pizza", foto: "img/pizza.jpg",
+  { id: "pizza", nosotros: "Masa de 48 horas y horno a la leña. Pizza por rebanada para probar de todo o completa para compartir en la mesa.", nombre: "Pizzería Brasa", que: "Pizza por rebanada o completa", cat: "Pizza", foto: "img/pizza.jpg",
     menu: { "Por rebanada": [["Pepperoni", "Rebanada grande", 45], ["Hawaiana", "Jamón y piña", 45], ["Tres quesos", "Mozzarella, cheddar y parmesano", 50]],
             "Completas": [["Pepperoni grande", "8 rebanadas", 260], ["Especial de la casa", "Pepperoni, champiñón y chorizo", 290]] } },
-  { id: "barra", nombre: "La Barra", que: "Cervezas, micheladas y refrescos", cat: "Bebidas", foto: "img/cerveza.jpg",
+  { id: "barra", nosotros: "La barra del patio: cervezas frías, artesanales de la región y micheladas preparadas al momento para acompañar cualquier antojo.", nombre: "La Barra", que: "Cervezas, micheladas y refrescos", cat: "Bebidas", foto: "img/cerveza.jpg",
     menu: { "Cervezas": [["Cerveza clara", "Media", 45], ["Cerveza artesanal", "De la región", 70], ["Cubeta de 6", "Clara u oscura", 240]],
             "Sin alcohol": [["Agua fresca", "Jamaica u horchata", 30], ["Refresco", "Lata", 30]] } },
-  { id: "churros", nombre: "Churrería Doña Lupe", que: "Churros, rellenos y café", cat: "Postres", foto: "img/churros.jpg",
+  { id: "churros", nosotros: "La receta de Doña Lupe, de toda la vida. Churros recién hechos, rellenos de cajeta o chocolate, y café de olla calientito.", nombre: "Churrería Doña Lupe", que: "Churros, rellenos y café", cat: "Postres", foto: "img/churros.jpg",
     menu: { "Churros": [["Orden de 3", "Con azúcar y canela", 40], ["Churro relleno", "Cajeta o chocolate", 30], ["Bolsa de 10", "Para compartir", 110]],
             "Para tomar": [["Chocolate caliente", "Con leche", 40], ["Café de olla", "Con canela", 35]] } },
 ];
@@ -210,10 +216,11 @@ $("#filtros").addEventListener("click", (e) => {
 });
 
 // Lista de locales
-$("#locales").innerHTML = LOCALES.map((l) => `<button class="local" type="button" data-id="${l.id}" data-cat="${esc(l.cat)}">
-  <img src="${l.foto}" alt="" width="104" height="104" loading="lazy">
-  <div><h2>${esc(l.nombre)}</h2><p>${esc(l.que)}</p><small><i></i>Abierto</small></div>
-  <span class="ir">${flecha}</span></button>`).join("");
+$("#locales").innerHTML = LOCALES.map((l) => `<article class="local" data-id="${l.id}" data-cat="${esc(l.cat)}">
+  <div class="local-cab"><img src="${l.foto}" alt="" width="72" height="72" loading="lazy">
+    <div><h2>${esc(l.nombre)}</h2><small><i></i>Abierto</small><span class="cat">${esc(l.cat)}</span></div></div>
+  <p class="nos">${esc(l.nosotros)}</p>
+  <button class="ver-menu" type="button">Ver menú</button></article>`).join("");
 
 // Menú de un local
 let actual = null, pedido = [];
@@ -221,7 +228,7 @@ function abrir(id, empujar = true) {
   actual = LOCALES.find((l) => l.id === id); if (!actual) return;
   pedido = [];
   $("#m-foto").src = actual.foto; $("#m-nombre").textContent = actual.nombre; $("#m-desc").textContent = actual.que;
-  $("#m-lista").innerHTML = Object.entries(actual.menu).map(([sec, xs]) => `<p class="seccion">${esc(sec)}</p>` + xs.map(([n, d, p]) =>
+  $("#m-lista").innerHTML = `<p class="m-nos">${esc(actual.nosotros)}</p>` + Object.entries(actual.menu).map(([sec, xs]) => `<p class="seccion">${esc(sec)}</p>` + xs.map(([n, d, p]) =>
     `<div class="platillo"><b>${esc(n)}</b><span>${esc(d)}</span><em>${dinero(p)}</em><button class="mas" type="button" data-n="${esc(n)}" data-p="${p}" aria-label="Agregar ${esc(n)}">+</button></div>`).join("")).join("");
   $("#menu").classList.add("abierto"); $("#menu").setAttribute("aria-hidden", "false"); $("#menu").scrollTop = 0;
   document.body.style.overflow = "hidden";
@@ -233,6 +240,7 @@ function cerrar() {
   document.body.style.overflow = ""; pedido = []; barra();
 }
 $("#locales").addEventListener("click", (e) => { const b = e.target.closest(".local"); if (b) abrir(b.dataset.id); });
+$("#locales").addEventListener("keydown", (e) => { if (e.key === "Enter" && e.target.closest(".local")) abrir(e.target.closest(".local").dataset.id); });
 $("#volver").addEventListener("click", () => (history.state && history.state.local ? history.back() : cerrar()));
 addEventListener("popstate", (e) => (e.state && e.state.local ? abrir(e.state.local, false) : cerrar()));
 

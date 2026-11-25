@@ -67,7 +67,7 @@ button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .cats::-webkit-scrollbar { display: none; }
 .cats a { flex: none; scroll-snap-align: start; display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px; background: #fff; border: 1.5px solid var(--linea);
   color: var(--negro); text-decoration: none; font-weight: 700; font-size: 15px; min-block-size: 44px; transition: background .25s, color .25s, border-color .25s, transform .2s var(--ease); }
-.cats a img { width: 32px; height: 32px; border-radius: 999px; }
+.cats a img { width: 32px; height: 32px; border-radius: 999px; background: #fff; padding: 3px; object-fit: contain; } /* círculo blanco: el ícono se ve también en la pestaña activa (roja) */
 .cats a[aria-current="true"] { background: var(--rojo); color: #fff; border-color: var(--rojo); transform: translateY(-1px); }
 .cats-sombra { position: relative; }
 

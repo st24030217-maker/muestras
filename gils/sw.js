@@ -1,7 +1,7 @@
 // Gil's sin internet: la primera visita con señal guarda la página, el menú, las fotos y el mapa.
 // Después el menú y el pedido funcionan sin internet; el mapa muestra las calles que ya se vieron.
 // Al cambiar la página, sube la VERSION para que todos reciban la nueva.
-const VERSION = "gils-v1";
+const VERSION = "gils-v2";
 const MAPA = "gils-mapa-v1"; // librería y calles del mapa (se guardan conforme se ven)
 const MAX_MAPA = 600; // tope de piezas del mapa guardadas, para no llenar el teléfono
 

@@ -28,7 +28,7 @@
 @font-face { font-family: Oswald; src: url(fonts/Oswald.ttf); font-weight: 200 700; font-display: swap; }
 @font-face { font-family: Rye; src: url(fonts/Rye-Regular.ttf); font-display: swap; }
 :root {
-  --rojo: #730f11; --rojo-2: #9b1b1e; --rojo-3: #5a0b0d; --negro: #1c1516; --crema: #f4efe0; --crema-2: #ece5d0; --papel: #faf6ea;
+  --rojo: #730f11; --rojo-2: #9b1b1e; --rojo-3: #5a0b0d; --negro: #3a2417; /* nogal: color madera en lugar de negro */ --crema: #f4efe0; --crema-2: #ece5d0; --papel: #faf6ea;
   --gris: #6b5b50; --linea: #ddd2b8; --verde: #1f8a4c; --verde-2: #18713d; --oro: #c9a45c;
   --alto: 100vh; /* alto de la pantalla (ver @supports y el script) */
   --tam: 19px; --target: 48px; --ease: cubic-bezier(.2,.8,.2,1); --rebote: cubic-bezier(.34,1.56,.64,1);
@@ -75,7 +75,7 @@ main { max-width: 44rem; margin: 0 auto; padding: 0 16px calc(7rem + env(safe-ar
 
 /* ---------- Portada ---------- */
 .hero { position: relative; margin: 14px 0 6px; border-radius: 28px; overflow: hidden; color: #fff; padding: 26px 22px 22px;
-  background: linear-gradient(180deg, #1c151640 0%, #1c151614 30%, #5a0b0dcc 62%, #3d0709f7 82%, #3d0709 100%), url(img/fondo-portada.jpg) center 35% / cover, var(--rojo); min-height: 30rem; display: flex; flex-direction: column; justify-content: flex-end;
+  background: linear-gradient(180deg, #3a241740 0%, #3a241714 30%, #5a0b0dcc 62%, #3d0709f7 82%, #3d0709 100%), url(img/fondo-portada.jpg) center 35% / cover, var(--rojo); min-height: 30rem; display: flex; flex-direction: column; justify-content: flex-end;
   box-shadow: 0 24px 50px -30px #5a0b0d; isolation: isolate; }
 .hero::before { display: none; content: ""; position: absolute; inset: 0; z-index: -1; opacity: .08;
   background-image: repeating-linear-gradient(45deg, #fff 0 1px, transparent 1px 14px), repeating-linear-gradient(-45deg, #fff 0 1px, transparent 1px 14px); mask-image: linear-gradient(180deg, #000, transparent 70%); }
@@ -138,9 +138,9 @@ dialog.hoja { position: fixed; inset: auto 0 0 0; margin: 0 auto; width: 100%; m
 dialog.hoja[open] { transform: none; }
 @starting-style { dialog.hoja[open] { transform: translateY(100%); } }
 dialog.hoja:not([open]) { display: none; }
-dialog.hoja::backdrop { background: #1c151600; transition: background .4s, overlay .4s allow-discrete, display .4s allow-discrete; }
-dialog.hoja[open]::backdrop { background: #1c1516a6; }
-@starting-style { dialog.hoja[open]::backdrop { background: #1c151600; } }
+dialog.hoja::backdrop { background: #3a241700; transition: background .4s, overlay .4s allow-discrete, display .4s allow-discrete; }
+dialog.hoja[open]::backdrop { background: #3a2417a6; }
+@starting-style { dialog.hoja[open]::backdrop { background: #3a241700; } }
 .agarre { width: 44px; height: 5px; border-radius: 9px; background: #00000026; margin: 10px auto 0; flex: none; }
 .hoja-cab { display: flex; align-items: center; gap: 10px; padding: 10px 18px 6px; flex: none; }
 .hoja-cab h2 { font-family: Oswald, sans-serif; font-size: 1.5rem; font-weight: 700; }

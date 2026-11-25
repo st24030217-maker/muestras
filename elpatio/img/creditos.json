@@ -14,13 +14,6 @@
     "pagina": "https://commons.wikimedia.org/wiki/File:Hamburger_(8).jpg"
   },
   {
-    "archivo": "pizza.jpg",
-    "titulo": "File:Pepperoni Pizza from Fellini’s Pizza.jpg",
-    "autor": "BullDawg2021",
-    "licencia": "CC BY 4.0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Pepperoni_Pizza_from_Fellini%E2%80%99s_Pizza.jpg"
-  },
-  {
     "archivo": "cerveza.jpg",
     "titulo": "File:Lisbon craft beer (53289660898).jpg",
     "autor": "David Blaikie from Hampshire, UK",
@@ -28,10 +21,38 @@
     "pagina": "https://commons.wikimedia.org/wiki/File:Lisbon_craft_beer_(53289660898).jpg"
   },
   {
-    "archivo": "churros.jpg",
-    "titulo": "File:Churros 001.jpg",
-    "autor": "Ocdp",
+    "archivo": "sushi.jpg",
+    "titulo": "File:Sushi rolls (3273983262).jpg",
+    "autor": "Geoff Peters from Vancouver, BC, Canada",
+    "licencia": "CC BY 2.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Sushi_rolls_(3273983262).jpg"
+  },
+  {
+    "archivo": "duranguense.jpg",
+    "titulo": "File:Carne asada plate (27481402076).jpg",
+    "autor": "T.Tseng",
+    "licencia": "CC BY 2.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Carne_asada_plate_(27481402076).jpg"
+  },
+  {
+    "archivo": "gorditas.jpg",
+    "titulo": "File:Gordita de chicharrón y rajas.jpg",
+    "autor": "Wotancito",
+    "licencia": "CC BY 4.0",
+    "pagina": "https://commons.wikimedia.org/wiki/File:Gordita_de_chicharr%C3%B3n_y_rajas.jpg"
+  },
+  {
+    "archivo": "postre.jpg",
+    "titulo": "File:Piece of chocolate cake on a white plate decorated with chocolate sauce.jpg",
+    "autor": "Daria YakovlevaMinor edits made by Subsidiary account",
     "licencia": "CC0",
-    "pagina": "https://commons.wikimedia.org/wiki/File:Churros_001.jpg"
+    "pagina": "https://commons.wikimedia.org/wiki/File:Piece_of_chocolate_cake_on_a_white_plate_decorated_with_chocolate_sauce.jpg"
+  },
+  {
+    "archivo": "logo.png",
+    "titulo": "Logo de El Patio Food Park & Bar",
+    "autor": "El Patio Food Park & Bar",
+    "licencia": "del negocio (tomado de su página en marea.pro, para la propuesta)",
+    "pagina": "https://marea.pro/elpatiofoodparkandbar"
   }
 ]

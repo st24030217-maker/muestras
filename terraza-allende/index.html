@@ -75,8 +75,7 @@ img { display: block; max-width: 100%; }
 
 /* ---------- Entrada ---------- */
 .entrada { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 64px 18px 118px; }
-.entrada .fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1) brightness(.62); transform: scale(1.12); }
-@media (prefers-reduced-motion: no-preference) { .entrada .fondo { animation: acerca 14s ease-out forwards; } @keyframes acerca { to { transform: scale(1); } } }
+.entrada .fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(1.1) brightness(.62); }
 .entrada::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 70% at 50% 45%, #00000059 0%, #000000c7 70%, #000000f2 100%), linear-gradient(180deg, #000000a6 0%, transparent 30%, transparent 60%, #000 100%); }
 .cinta { position: absolute; left: 0; white-space: nowrap; font: 900 clamp(110px, 20vh, 260px)/.84 var(--fd); letter-spacing: -.06em; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.2px #ffffff26; pointer-events: none; user-select: none; }
 .cinta span { display: inline-block; padding-right: .22em; }
@@ -125,8 +124,7 @@ img { display: block; max-width: 100%; }
 }
 
 /* ---------- Una sección del menú por pantalla ---------- */
-.sec .fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.08) saturate(1.12) brightness(.92); transform: scale(1.18); transition: transform 7s cubic-bezier(.15,.6,.3,1); }
-.sec.on .fondo { transform: scale(1.02); }
+.sec .fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.08) saturate(1.12) brightness(.92); }
 .sec::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #000000cc 0%, #00000000 26%, #00000000 40%, #000000e6 68%, #000 100%), radial-gradient(90% 60% at 80% 30%, #ff7a4514, transparent 60%); pointer-events: none; }
 .sec .num { position: absolute; z-index: 2; top: calc(66px + env(safe-area-inset-top, 0px)); left: 12px; font: 900 clamp(72px, min(41vw, 19vh), 270px)/.8 var(--fd); letter-spacing: -.07em; color: transparent; -webkit-text-stroke: 1.5px #ffffffd9; pointer-events: none; }
 .sec .num small { font-size: 18px; letter-spacing: .02em; -webkit-text-stroke: 0; color: var(--foco); vertical-align: top; margin-left: 8px; }

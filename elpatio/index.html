@@ -3,202 +3,215 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>El Patio Food Park & Bar · Menús</title>
-<meta name="description" content="Todos los restaurantes de El Patio Food Park & Bar, en Lerdo, con su menú. Muestra con menús de ejemplo.">
+<title>El Patio Food Park & Bar · Lerdo</title>
+<meta name="description" content="7 restaurantes, una sola mesa. Los menús de El Patio Food Park & Bar en Lerdo. Muestra con menús de ejemplo.">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="img/logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,700;0,800;0,900;1,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* Propuesta para El Patio Food Park & Bar (Lerdo): un solo QR abre todos los restaurantes, su "nosotros" y su menú.
-   Colores y letra de su marca: blanco y negro, letra grotesca gruesa como la del logo. El verde solo es el de WhatsApp. */
+/* El Patio Food Park & Bar (Lerdo). Propuesta: cada restaurante es una pantalla completa, como historias.
+   Marca en blanco y negro (su logo); el color lo pone la comida. El verde es solo el de WhatsApp. */
 :root {
-  --negro: #000; --tinta: #111; --gris: #5f5f5f; --linea: #e4e2dd;
-  --hueso: #f5f4f1; --blanco: #fff; --wa: #15803d;
+  --negro: #000; --blanco: #fff; --hueso: #f5f4f1; --gris: #6b6b6b; --linea: #e6e4df; --wa: #16a34a;
   --fd: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --fb: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --ease: cubic-bezier(.2,.8,.2,1);
+  --alto: 100vh;
 }
+@supports (height: 100svh) { :root { --alto: 100svh; } }
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-body { margin: 0; background: var(--hueso); color: var(--tinta); font: 17px/1.45 var(--fb); -webkit-font-smoothing: antialiased; }
+html, body { margin: 0; height: 100%; background: var(--negro); }
+body { color: var(--blanco); font: 17px/1.45 var(--fb); -webkit-font-smoothing: antialiased; overflow: hidden; }
 button { font: inherit; color: inherit; cursor: pointer; }
 a { color: inherit; }
-:focus-visible { outline: 3px solid var(--negro); outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--blanco); outline-offset: 3px; }
 img { display: block; max-width: 100%; }
-.envoltura { max-width: 34rem; margin: 0 auto; padding: 0 16px; }
 
-/* ---------- Portada negra con "El Patio" repetido, como su página ---------- */
-.portada { position: relative; overflow: hidden; background: var(--negro); color: var(--blanco); padding: calc(18px + env(safe-area-inset-top)) 0 28px; }
-.patron { position: absolute; inset: -20px -40px; display: flex; flex-direction: column; font: 900 64px/.92 var(--fd); letter-spacing: -.04em; color: #ffffff12; white-space: nowrap; pointer-events: none; user-select: none; }
-.portada .envoltura { position: relative; }
-.arriba { display: flex; justify-content: flex-end; }
-.mesa { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--blanco); color: var(--negro); border: 0; font-weight: 700; font-size: 15px; }
+/* En computadora se ve como un celular al centro */
+.app { position: relative; height: var(--alto); max-width: 480px; margin: 0 auto; overflow: hidden; background: var(--negro); }
+.rollo { height: 100%; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; }
+.rollo::-webkit-scrollbar { display: none; }
+.pant { position: relative; height: var(--alto); scroll-snap-align: start; scroll-snap-stop: always; overflow: hidden; }
+
+/* ---------- Barra de arriba ---------- */
+.cab { position: absolute; z-index: 20; top: 0; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; padding: calc(12px + env(safe-area-inset-top)) 16px 0; pointer-events: none; }
+.cab > * { pointer-events: auto; }
+.mini { width: 44px; height: 44px; border-radius: 50%; opacity: 0; transform: scale(.6); transition: opacity .3s, transform .3s var(--ease); }
+.app.dentro .mini { opacity: 1; transform: none; }
+.mesa { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: #ffffffeb; color: var(--negro); border: 0; font-weight: 700; font-size: 15px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .mesa i { width: 8px; height: 8px; border-radius: 50%; background: var(--wa); }
-.logo { width: 132px; height: 132px; margin: 10px auto 0; border-radius: 50%; box-shadow: 0 0 0 3px #ffffff33; }
-.portada h1 { margin: 18px 0 6px; text-align: center; font: 800 clamp(30px, 8.6vw, 40px)/1.02 var(--fd); letter-spacing: -.03em; }
-.portada .lema { margin: 0 auto; max-width: 26ch; text-align: center; color: #ffffffcc; font-size: 16px; }
-.acciones { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 20px; }
-.btn { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 14px; border-radius: 14px; font-weight: 700; font-size: 15.5px; text-decoration: none; border: 0; }
-.btn.claro { background: var(--blanco); color: var(--negro); }
-.btn.borde { background: transparent; color: var(--blanco); border: 1.5px solid #ffffff55; }
-.btn.ancho { grid-column: 1 / -1; }
-.redes { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
-.redes a { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid #ffffff40; color: var(--blanco); }
 
-/* ---------- Filtros ---------- */
-.filtros { position: sticky; top: 0; z-index: 9; background: var(--hueso); padding: calc(12px + env(safe-area-inset-top)) 0 10px; border-bottom: 1px solid #0000000d; }
-.filtros .fila { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 0 16px; }
-.filtros .fila::-webkit-scrollbar { display: none; }
-.chip { flex: none; min-height: 44px; padding: 0 18px; border-radius: 999px; border: 1.5px solid var(--linea); background: var(--blanco); font-weight: 600; font-size: 15px; transition: background .2s, color .2s, border-color .2s; }
-.chip[aria-pressed="true"] { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+/* ---------- Entrada: EL PATIO gigante en movimiento ---------- */
+.entrada { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 20px; background: var(--negro); }
+.cinta { position: absolute; left: 0; white-space: nowrap; font: 900 132px/.86 var(--fd); letter-spacing: -.055em; text-transform: uppercase; color: transparent; -webkit-text-stroke: 1.5px #ffffff26; pointer-events: none; user-select: none; }
+.cinta span { display: inline-block; padding-right: .25em; }
+.cinta.c1 { top: 4%; } .cinta.c2 { top: 26%; color: #ffffff0d; -webkit-text-stroke: 0; } .cinta.c3 { top: 58%; } .cinta.c4 { top: 80%; color: #ffffff0d; -webkit-text-stroke: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .cinta.c1, .cinta.c3 { animation: corre 38s linear infinite; }
+  .cinta.c2, .cinta.c4 { animation: corre 46s linear infinite reverse; }
+  @keyframes corre { to { transform: translateX(-50%); } }
+}
+.entrada .logo { position: relative; width: 150px; height: 150px; border-radius: 50%; box-shadow: 0 0 0 6px #000, 0 0 0 7.5px #ffffff40, 0 30px 80px -10px #ffffff26; }
+.entrada h1 { position: relative; margin: 26px 0 0; font: 900 clamp(46px, 13.5vw, 64px)/.9 var(--fd); letter-spacing: -.05em; }
+.entrada h1 em { font-style: italic; font-weight: 900; color: transparent; -webkit-text-stroke: 2px var(--blanco); }
+.entrada p { position: relative; margin: 14px 0 0; max-width: 28ch; color: #ffffffb3; font-size: 16px; }
+.botones { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 22px; }
+.boton { display: inline-flex; align-items: center; gap: 8px; min-height: 46px; padding: 0 18px; border-radius: 999px; font-weight: 700; font-size: 15px; text-decoration: none; }
+.boton.lleno { background: var(--blanco); color: var(--negro); }
+.boton.linea { border: 1.5px solid #ffffff4d; color: var(--blanco); }
+.baja { position: absolute; bottom: calc(96px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #ffffff99; }
+@media (prefers-reduced-motion: no-preference) { .baja svg { animation: rebota 1.6s ease-in-out infinite; } @keyframes rebota { 50% { transform: translateY(6px); } } }
 
-/* ---------- Restaurantes ---------- */
-.titulo-sec { margin: 22px 0 12px; font: 800 26px/1.1 var(--fd); letter-spacing: -.02em; }
-.locales { display: grid; gap: 14px; padding-bottom: 26px; }
-.local { background: var(--blanco); border-radius: 22px; overflow: hidden; box-shadow: 0 1px 0 #0000000a, 0 12px 28px -20px #00000059; cursor: pointer; transition: transform .15s var(--ease); }
-.local:active { transform: scale(.985); }
-.local .foto { height: 150px; }
-.local .foto img { width: 100%; height: 100%; object-fit: cover; }
-.local .txt { padding: 14px 16px 16px; }
-.local h3 { margin: 0; font: 800 24px/1.05 var(--fd); letter-spacing: -.025em; }
-.local .tipo { display: flex; align-items: center; gap: 10px; margin-top: 4px; font-size: 14px; font-weight: 600; color: var(--gris); }
-.local .tipo b { display: inline-flex; align-items: center; gap: 6px; color: var(--wa); font-weight: 700; }
-.local .tipo b i { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
-.local .nos { margin: 10px 0 14px; font-size: 15.5px; line-height: 1.45; color: var(--tinta); }
-.ver-menu { width: 100%; min-height: 48px; border: 0; border-radius: 14px; background: var(--negro); color: var(--blanco); font-weight: 700; font-size: 16px; }
-.local[hidden], .pronto[hidden] { display: none; }
-.pronto { border: 1.5px dashed #c9c6bf; border-radius: 22px; padding: 22px 16px; text-align: center; color: var(--gris); }
-.pronto b { display: block; font: 800 22px/1.1 var(--fd); letter-spacing: -.02em; color: var(--tinta); margin-bottom: 4px; }
+/* ---------- Un restaurante por pantalla ---------- */
+.rest .fondo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transition: transform 1.2s var(--ease); }
+.rest.on .fondo { transform: scale(1); }
+.rest::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #000000b3 0%, #00000000 22%, #00000000 38%, #000000d9 72%, #000 100%); pointer-events: none; }
+.rest .info { position: absolute; z-index: 2; left: 20px; right: 20px; bottom: calc(104px + env(safe-area-inset-bottom)); }
+.rest .cat { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 999px; background: #ffffff1f; border: 1px solid #ffffff33; font-size: 13.5px; font-weight: 600; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.rest .cat i { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; }
+.rest h2 { margin: 14px 0 0; font: 900 clamp(52px, 15vw, 76px)/.86 var(--fd); letter-spacing: -.055em; overflow-wrap: anywhere; }
+.rest .nos { margin: 14px 0 0; max-width: 34ch; font-size: 16.5px; line-height: 1.45; color: #ffffffe0; }
+.rest .ver { margin-top: 20px; display: inline-flex; align-items: center; justify-content: center; min-height: 56px; padding: 0 28px; border: 0; border-radius: 999px; background: var(--blanco); color: var(--negro); font-weight: 800; font-size: 17px; transition: transform .15s var(--ease); }
+.rest .ver:active { transform: scale(.95); }
+@media (prefers-reduced-motion: no-preference) {
+  .rest h2, .rest .nos, .rest .ver, .rest .cat { opacity: 0; transform: translateY(26px); transition: opacity .5s var(--ease), transform .6s var(--ease); }
+  .rest.on .cat { opacity: 1; transform: none; transition-delay: .05s; }
+  .rest.on h2 { opacity: 1; transform: none; transition-delay: .12s; }
+  .rest.on .nos { opacity: 1; transform: none; transition-delay: .22s; }
+  .rest.on .ver { opacity: 1; transform: none; transition-delay: .3s; }
+}
+.pronto { display: grid; place-items: center; text-align: center; padding: 0 24px; background: var(--negro); }
+.pronto b { display: block; font: 900 clamp(48px, 14vw, 70px)/.88 var(--fd); letter-spacing: -.05em; color: transparent; -webkit-text-stroke: 2px var(--blanco); }
+.pronto p { color: #ffffffa6; margin: 14px 0 0; }
+.pronto small { display: block; margin-top: 40px; font-size: 12px; color: #ffffff73; line-height: 1.5; }
 
-/* ---------- Menú de un restaurante ---------- */
-.menu { position: fixed; inset: 0; z-index: 30; background: var(--hueso); overflow-y: auto; overscroll-behavior: contain; visibility: hidden; opacity: 0; transform: translateY(24px); transition: opacity .25s var(--ease), transform .3s var(--ease), visibility 0s .3s; }
-.menu.abierto { visibility: visible; opacity: 1; transform: none; transition: opacity .25s var(--ease), transform .3s var(--ease); }
-.menu-foto { position: relative; height: 250px; background: var(--negro); }
-.menu-foto img { width: 100%; height: 100%; object-fit: cover; opacity: .9; }
-.menu-foto::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, #00000066 0%, transparent 35%, transparent 50%, #000000e6 100%); }
-.volver { position: absolute; z-index: 2; top: calc(12px + env(safe-area-inset-top)); left: 12px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 10px; border-radius: 999px; border: 0; background: var(--blanco); font-weight: 700; font-size: 15px; box-shadow: 0 6px 16px -8px #0008; }
-.menu-titulo { position: absolute; z-index: 2; left: 16px; right: 16px; bottom: 16px; color: var(--blanco); }
-.menu-titulo h2 { margin: 0; font: 800 38px/1 var(--fd); letter-spacing: -.03em; }
-.menu-titulo p { margin: 4px 0 0; font-size: 15px; color: #ffffffd9; }
-.m-nos { margin: 18px 0 0; padding: 14px 16px; border-radius: 16px; background: var(--blanco); font-size: 15.5px; line-height: 1.45; }
-.m-nos b { display: block; font: 800 15px/1.2 var(--fd); margin-bottom: 4px; }
-.seccion { margin: 24px 0 4px; font: 800 20px/1.1 var(--fd); letter-spacing: -.02em; }
+/* Puntos: en qué restaurante vas */
+.puntos { position: absolute; z-index: 15; right: 10px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; opacity: 0; transition: opacity .3s; }
+.app.dentro .puntos { opacity: 1; }
+.puntos i { width: 6px; height: 6px; border-radius: 9px; background: #ffffff59; transition: height .3s var(--ease), background .3s; }
+.puntos i.on { height: 22px; background: var(--blanco); }
+
+/* Barra de abajo: nombres para saltar */
+.nav { position: absolute; z-index: 20; left: 0; right: 0; bottom: 0; padding: 10px 0 calc(12px + env(safe-area-inset-bottom)); background: linear-gradient(transparent, #000000cc 40%); }
+.nav .fila { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; padding: 0 16px; scroll-padding: 0 16px; }
+.nav .fila::-webkit-scrollbar { display: none; }
+.nav button { flex: none; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid #ffffff40; background: #0000004d; color: var(--blanco); font-weight: 700; font-size: 14.5px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: background .25s, color .25s, border-color .25s; }
+.nav button.on { background: var(--blanco); color: var(--negro); border-color: var(--blanco); }
+
+/* ---------- Menú: sube desde abajo encima del restaurante ---------- */
+.velo { position: absolute; z-index: 40; inset: 0; background: #000000a6; opacity: 0; visibility: hidden; transition: opacity .3s, visibility 0s .3s; }
+.velo.on { opacity: 1; visibility: visible; transition: opacity .3s; }
+.hoja { position: absolute; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 86%; display: flex; flex-direction: column; border-radius: 28px 28px 0 0; background: var(--hueso); color: #111; transform: translateY(105%); transition: transform .42s var(--ease); }
+.hoja.on { transform: none; }
+.hoja-cab { flex: none; padding: 10px 20px 14px; border-bottom: 1px solid var(--linea); }
+.agarre { width: 44px; height: 5px; border-radius: 9px; background: #00000026; margin: 0 auto 12px; }
+.hoja-cab .fila { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.hoja-cab h3 { margin: 0; font: 900 30px/1 var(--fd); letter-spacing: -.04em; }
+.hoja-cab p { margin: 6px 0 0; font-size: 14.5px; color: var(--gris); }
+.cerrar { flex: none; width: 44px; height: 44px; border-radius: 50%; border: 0; background: #0000000d; display: grid; place-items: center; }
+.hoja-lista { flex: 1; overflow-y: auto; overscroll-behavior: contain; padding: 0 20px calc(110px + env(safe-area-inset-bottom)); }
+.seccion { margin: 22px 0 2px; font: 900 19px/1.1 var(--fd); letter-spacing: -.02em; }
 .platillo { display: grid; grid-template-columns: 1fr auto; gap: 2px 14px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--linea); }
-.platillo b { font-size: 17.5px; font-weight: 600; line-height: 1.25; }
-.platillo span { grid-column: 1; font-size: 14.5px; color: var(--gris); }
-.platillo em { grid-column: 1; font-style: normal; font-weight: 700; font-size: 17px; }
-.mas { grid-column: 2; grid-row: 1 / 4; width: 48px; height: 48px; border-radius: 50%; border: 0; background: var(--negro); color: var(--blanco); font-size: 26px; line-height: 1; display: grid; place-items: center; transition: transform .15s var(--ease), background .2s; }
+.platillo b { font-size: 17px; font-weight: 600; line-height: 1.25; }
+.platillo span { grid-column: 1; font-size: 14px; color: var(--gris); }
+.platillo em { grid-column: 1; font-style: normal; font-weight: 700; font-size: 16.5px; }
+.mas { grid-column: 2; grid-row: 1 / 4; width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--negro); color: var(--blanco); font-size: 25px; line-height: 1; display: grid; place-items: center; transition: transform .15s var(--ease), background .2s; }
 .mas:active { transform: scale(.88); }
 .mas.listo { background: var(--wa); }
-.espacio { height: 120px; }
+.pedir { position: absolute; z-index: 42; left: 16px; right: 16px; bottom: calc(14px + env(safe-area-inset-bottom)); display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding: 0 20px; border: 0; border-radius: 18px; background: var(--wa); color: #fff; font-weight: 700; font-size: 17px; box-shadow: 0 16px 32px -14px #14532dcc; transform: translateY(140%); transition: transform .35s var(--ease); }
+.pedir.on { transform: none; }
+.pedir span:first-child { display: inline-flex; align-items: center; gap: 10px; }
 
-.pedir { position: fixed; z-index: 31; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(14px + env(safe-area-inset-bottom)); background: linear-gradient(transparent, var(--hueso) 30%); visibility: hidden; opacity: 0; transition: opacity .2s, visibility 0s .2s; }
-.pedir.ver { visibility: visible; opacity: 1; transition: opacity .2s; }
-.pedir button { width: 100%; max-width: 34rem; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding: 0 20px; border: 0; border-radius: 18px; background: var(--wa); color: #fff; font-weight: 700; font-size: 17px; box-shadow: 0 16px 32px -14px #14532dcc; }
-.pedir button span:first-child { display: inline-flex; align-items: center; gap: 10px; }
-
-dialog { border: 0; border-radius: 22px; padding: 22px; width: calc(100% - 24px); max-width: 26rem; background: var(--blanco); color: var(--tinta); box-shadow: 0 30px 60px -20px #000a; }
-dialog::backdrop { background: #000000a6; }
-dialog h3 { margin: 0 0 6px; font: 800 26px/1.05 var(--fd); letter-spacing: -.02em; }
+dialog { border: 0; border-radius: 22px; padding: 22px; width: calc(100% - 24px); max-width: 26rem; background: #fff; color: #111; box-shadow: 0 30px 60px -20px #000a; }
+dialog::backdrop { background: #000000b3; }
+dialog h4 { margin: 0 0 6px; font: 900 26px/1.05 var(--fd); letter-spacing: -.03em; }
 dialog p { margin: 0 0 14px; color: var(--gris); font-size: 15px; }
 .burbuja { background: #dcf8c6; border-radius: 14px 14px 14px 4px; padding: 12px 14px; font-size: 15px; white-space: pre-line; }
-.cerrar { margin-top: 16px; width: 100%; min-height: 50px; border: 0; border-radius: 14px; background: var(--negro); color: var(--blanco); font-weight: 700; }
-
-.pie { padding: 6px 0 40px; font-size: 13px; color: var(--gris); }
-.pie .aviso { display: block; padding: 12px 14px; border-radius: 14px; background: #ebe9e4; color: var(--tinta); font-size: 14px; margin-bottom: 14px; }
+.ok { margin-top: 16px; width: 100%; min-height: 50px; border: 0; border-radius: 14px; background: #000; color: #fff; font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition-duration: .01ms !important; } }
 </style>
 </head>
 <body>
+<div class="app" id="app">
 
-<header class="portada">
-  <div class="patron" aria-hidden="true"><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span><span>El Patio El Patio El Patio</span></div>
-  <div class="envoltura">
-    <div class="arriba"><button class="mesa" type="button" id="mesa"><i></i><span id="mesa-t">Mesa 12</span></button></div>
-    <img class="logo" src="img/logo.png" alt="El Patio Food Park & Bar" width="132" height="132">
-    <h1>El Food Park que más esperas en Lerdo</h1>
-    <p class="lema">El mejor ambiente familiar en Lerdo. Pregunta por nuestros juegos de mesa.</p>
-    <div class="acciones">
-      <a class="btn claro" href="https://m.me/213431005195922" target="_blank" rel="noopener">Reservaciones</a>
-      <a class="btn borde" href="https://www.google.com/maps/search/?api=1&query=25.543655,-103.5267131" target="_blank" rel="noopener">Cómo llegar</a>
-      <a class="btn borde ancho" href="https://tally.so/r/3EyQrB" target="_blank" rel="noopener">Queremos escucharte</a>
+  <header class="cab">
+    <img class="mini" src="img/logo.png" alt="El Patio" width="44" height="44">
+    <button class="mesa" type="button" id="mesa"><i></i><span id="mesa-t">Mesa 12</span></button>
+  </header>
+
+  <main class="rollo" id="rollo">
+    <section class="pant entrada" id="inicio" aria-label="El Patio Food Park & Bar">
+      <div class="cinta c1" aria-hidden="true"><span>El Patio</span><span>El Patio</span><span>El Patio</span><span>El Patio</span><span>El Patio</span><span>El Patio</span></div>
+      <div class="cinta c2" aria-hidden="true"><span>Food Park</span><span>Food Park</span><span>Food Park</span><span>Food Park</span><span>Food Park</span><span>Food Park</span></div>
+      <div class="cinta c3" aria-hidden="true"><span>El Patio</span><span>El Patio</span><span>El Patio</span><span>El Patio</span><span>El Patio</span><span>El Patio</span></div>
+      <div class="cinta c4" aria-hidden="true"><span>&amp; Bar</span><span>&amp; Bar</span><span>&amp; Bar</span><span>&amp; Bar</span><span>&amp; Bar</span><span>&amp; Bar</span><span>&amp; Bar</span><span>&amp; Bar</span></div>
+      <img class="logo" src="img/logo.png" alt="El Patio Food Park & Bar" width="150" height="150">
+      <h1>7 restaurantes.<br><em>Una sola mesa.</em></h1>
+      <p>El Food Park que más esperas en Lerdo. Pide de cualquiera desde tu lugar.</p>
+      <div class="botones">
+        <a class="boton lleno" href="https://m.me/213431005195922" target="_blank" rel="noopener">Reservaciones</a>
+        <a class="boton linea" href="https://www.google.com/maps/search/?api=1&query=25.543655,-103.5267131" target="_blank" rel="noopener">Cómo llegar</a>
+      </div>
+      <div class="baja" aria-hidden="true">Desliza<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></div>
+    </section>
+    <!-- Los restaurantes se dibujan aquí -->
+  </main>
+
+  <div class="puntos" id="puntos" aria-hidden="true"></div>
+  <nav class="nav" aria-label="Restaurantes"><div class="fila" id="nav"></div></nav>
+
+  <div class="velo" id="velo"></div>
+  <section class="hoja" id="hoja" aria-hidden="true" aria-labelledby="h-nombre">
+    <div class="hoja-cab">
+      <div class="agarre"></div>
+      <div class="fila"><h3 id="h-nombre"></h3><button class="cerrar" type="button" id="cerrar" aria-label="Cerrar menú"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <p id="h-nos"></p>
     </div>
-    <div class="redes">
-      <a href="https://www.instagram.com/elpatiofoodpark.mx" target="_blank" rel="noopener" aria-label="Instagram"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></a>
-      <a href="https://www.tiktok.com/@elpatiofoodpark.mx" target="_blank" rel="noopener" aria-label="TikTok"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.6 5.8A4.3 4.3 0 0 1 15.5 3h-3.1v12.4a2.6 2.6 0 1 1-1.8-2.5V9.7a5.8 5.8 0 1 0 4.9 5.7V9.1a7.4 7.4 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.2-1.6z"/></svg></a>
-      <a href="https://www.facebook.com/profile.php?id=61557006183354" target="_blank" rel="noopener" aria-label="Facebook"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.4V11H7v4h3v9h4v-9h3l1-4h-4V8.6c0-.4.3-.6.6-.6z"/></svg></a>
-    </div>
-  </div>
-</header>
-
-<nav class="filtros" aria-label="Filtrar restaurantes"><div class="envoltura"><div class="fila" id="filtros"></div></div></nav>
-
-<main class="envoltura">
-  <h2 class="titulo-sec">Nuestros restaurantes</h2>
-  <section class="locales" id="locales" aria-label="Restaurantes"></section>
-  <footer class="pie">
-    <span class="aviso">Muestra para El Patio con sus 7 restaurantes reales. Las descripciones, los menús y los precios son de ejemplo: con los de cada local queda igual.</span>
-    Fotos de comida: T.Tseng (CC BY 2.0), Thiago Fior de Castro (dominio público), David Blaikie (CC BY 2.0), Geoff Peters (CC BY 2.0), Wotancito (CC BY 4.0) y Daria Yakovleva (CC0), en Wikimedia Commons.<br>
-    Av. Belisario Domínguez 760, Zona Centro, Lerdo, Dgo. Hecho por <a href="https://portafolio-salinas-serrano-sebastia.vercel.app" target="_blank" rel="noopener">sss.solutions</a>
-  </footer>
-</main>
-
-<section class="menu" id="menu" aria-hidden="true" aria-labelledby="m-nombre">
-  <div class="menu-foto">
-    <img id="m-foto" src="img/tacos.jpg" alt="">
-    <button class="volver" type="button" id="volver">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-      Restaurantes
-    </button>
-    <div class="menu-titulo"><h2 id="m-nombre"></h2><p id="m-desc"></p></div>
-  </div>
-  <div class="envoltura" id="m-lista"></div>
-  <div class="espacio"></div>
-</section>
-
-<div class="pedir" id="pedir">
-  <button type="button" id="pedir-btn">
+    <div class="hoja-lista" id="h-lista"></div>
+  </section>
+  <button class="pedir" type="button" id="pedir">
     <span><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.4-.2z"/></svg><span id="pedir-t">Pedir por WhatsApp</span></span>
     <span id="pedir-total">$0</span>
   </button>
 </div>
 
 <dialog id="vista" aria-labelledby="v-t">
-  <h3 id="v-t">Así le llega al restaurante</h3>
+  <h4 id="v-t">Así le llega al restaurante</h4>
   <p>El pedido sale directo al WhatsApp de ese restaurante, con el número de mesa. En esta muestra no se manda nada.</p>
   <div class="burbuja" id="v-msg"></div>
-  <button class="cerrar" type="button" id="v-cerrar">Entendido</button>
+  <button class="ok" type="button" id="v-ok">Entendido</button>
 </dialog>
 
 <script>
 // Los 7 restaurantes reales de El Patio (de su página). Descripciones, menús y precios: de ejemplo.
 const LOCALES = [
-  { id: "thebar", nombre: "The Bar", que: "La barra de El Patio", cat: "Bar", foto: "img/cerveza.jpg",
-    nosotros: "La barra del patio: cervezas bien frías, micheladas preparadas al momento y cocteles para acompañar lo que pidas en cualquier restaurante.",
+  { id: "thebar", nombre: "The Bar", que: "La barra de El Patio", foto: "img/cerveza.jpg",
+    nosotros: "Cervezas bien frías, micheladas al momento y cocteles para acompañar lo que pidas en cualquier restaurante.",
     menu: { "Cervezas": [["Cerveza nacional", "Media", 45], ["Cerveza artesanal", "De la región", 75], ["Cubeta de 6", "Nacional", 240]],
             "Preparados": [["Michelada", "Clamato, limón y chile", 75], ["Mojito", "Hierbabuena y limón", 95], ["Limonada", "Natural o mineral", 40]] } },
-  { id: "yoshito", nombre: "Yoshito Asian Food", que: "Comida asiática", cat: "Asiática", foto: "img/sushi.jpg",
-    nosotros: "Sushi, arroces y sabores de Asia hechos al momento. Rollos frescos para compartir en la mesa con toda la familia.",
-    menu: { "Rollos": [["Rollo California", "Surimi, pepino y aguacate", 120], ["Rollo empanizado", "Camarón, queso y aguacate", 145], ["Rollo de la casa", "Por fuera aguacate y salsa de anguila", 165]],
+  { id: "yoshito", nombre: "Yoshito Asian Food", que: "Comida asiática", foto: "img/sushi.jpg",
+    nosotros: "Sushi, arroces y sabores de Asia hechos al momento. Rollos frescos para compartir con toda la familia.",
+    menu: { "Rollos": [["Rollo California", "Surimi, pepino y aguacate", 120], ["Rollo empanizado", "Camarón, queso y aguacate", 145], ["Rollo de la casa", "Aguacate y salsa de anguila", 165]],
             "Calientes": [["Arroz frito", "Pollo, res o camarón", 110], ["Yakimeshi", "Con verduras y salsa de soya", 115]] } },
-  { id: "tacotes", nombre: "Tacotes", que: "Tacos", cat: "Tacos", foto: "img/tacos.jpg",
-    nosotros: "Tacos grandes, como su nombre. Carne asada al carbón, pastor al trompo y salsas que se hacen todos los días.",
+  { id: "tacotes", nombre: "Tacotes", que: "Tacos", foto: "img/tacos.jpg",
+    nosotros: "Tacos grandes, como su nombre. Asada al carbón, pastor al trompo y salsas hechas todos los días.",
     menu: { "Tacos": [["Taco de asada", "Tortilla de maíz o harina", 28], ["Taco al pastor", "Con piña y cilantro", 25], ["Orden de 5", "Asada o pastor", 120]],
             "Especiales": [["Gringa", "Harina, pastor y queso", 70], ["Quesotaco", "Costra de queso y asada", 45]] } },
-  { id: "duranguense", nombre: "El Duranguense", que: "Comida duranguense", cat: "Duranguense", foto: "img/duranguense.jpg",
+  { id: "duranguense", nombre: "El Duranguense", que: "Comida duranguense", foto: "img/duranguense.jpg",
     nosotros: "El sabor de Durango en un plato: caldillo, asado y carne bien preparada, como en casa de la abuela.",
-    menu: { "Platillos": [["Caldillo duranguense", "Carne seca, chile y papa", 120], ["Plato de asada", "Con frijoles, guacamole y tortillas", 150], ["Asado rojo", "Puerco en chile colorado", 130]],
+    menu: { "Platillos": [["Caldillo duranguense", "Carne seca, chile y papa", 120], ["Plato de asada", "Frijoles, guacamole y tortillas", 150], ["Asado rojo", "Puerco en chile colorado", 130]],
             "Para compartir": [["Discada", "Para 2 personas", 260]] } },
-  { id: "cristy", nombre: "Gorditas Cristy", que: "Gorditas de comal", cat: "Gorditas", foto: "img/gorditas.jpg",
+  { id: "cristy", nombre: "Gorditas Cristy", que: "Gorditas de comal", foto: "img/gorditas.jpg",
     nosotros: "Gorditas hechas a mano en el comal, rellenas de los guisos de siempre. Pide una de cada para probar.",
     menu: { "Gorditas": [["Chicharrón", "Prensado en salsa verde", 30], ["Deshebrada", "Res en salsa roja", 30], ["Rajas con queso", "Con crema", 30], ["Frijol con queso", "Para los niños", 28]],
             "Para tomar": [["Agua fresca", "Jamaica u horchata", 30]] } },
-  { id: "burgerboys", nombre: "Burger Boys", que: "Hamburguesas", cat: "Hamburguesas", foto: "img/burger.jpg",
-    nosotros: "Hamburguesas jugosas a la plancha, pan suave y papas recién hechas. La favorita de los niños y de los no tan niños.",
+  { id: "burgerboys", nombre: "Burger Boys", que: "Hamburguesas", foto: "img/burger.jpg",
+    nosotros: "Hamburguesas jugosas a la plancha, pan suave y papas recién hechas. La favorita de chicos y grandes.",
     menu: { "Hamburguesas": [["Clásica", "Carne, queso y vegetales", 95], ["Doble", "Doble carne y doble queso", 135], ["Hawaiana", "Piña asada y jamón", 115]],
             "Para acompañar": [["Papas a la francesa", "Con sal de la casa", 50], ["Aros de cebolla", "Con aderezo", 60]] } },
-  { id: "nu", nombre: "Nü Postrería", que: "Postres", cat: "Postres", foto: "img/postre.jpg",
+  { id: "nu", nombre: "Nü Postrería", que: "Postres", foto: "img/postre.jpg",
     nosotros: "Para cerrar con algo dulce: pasteles, postres fríos y café para la sobremesa.",
     menu: { "Postres": [["Pastel de chocolate", "Rebanada", 65], ["Pay de queso", "Con mermelada de fresa", 60], ["Fresas con crema", "Vaso grande", 55]],
             "Café": [["Americano", "", 35], ["Capuchino", "", 50]] } },
@@ -206,46 +219,53 @@ const LOCALES = [
 const $ = (s) => document.querySelector(s);
 const dinero = (n) => "$" + n.toLocaleString("es-MX");
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const app = $("#app"), rollo = $("#rollo");
 
-// La mesa viene en el QR (?mesa=12): cada mesa tiene su código.
+// Mesa del QR (?mesa=12)
 const mesa = new URLSearchParams(location.search).get("mesa") || "12";
 $("#mesa-t").textContent = "Mesa " + mesa;
 $("#mesa").addEventListener("click", () => alert("Cada mesa tiene su propio QR, así el restaurante sabe a dónde llevar el pedido."));
 
-const cats = ["Todos", ...new Set(LOCALES.map((l) => l.cat))];
-$("#filtros").innerHTML = cats.map((c, i) => `<button class="chip" type="button" data-cat="${esc(c)}" aria-pressed="${i ? "false" : "true"}">${esc(c)}</button>`).join("");
+// Una pantalla por restaurante + el que viene
+rollo.insertAdjacentHTML("beforeend", LOCALES.map((l, i) => `<section class="pant rest" id="r-${l.id}" data-i="${i}" aria-label="${esc(l.nombre)}">
+  <img class="fondo" src="${l.foto}" alt="" ${i < 2 ? "" : 'loading="lazy"'} decoding="async">
+  <div class="info"><span class="cat"><i></i>Abierto · ${esc(l.que)}</span><h2>${esc(l.nombre)}</h2><p class="nos">${esc(l.nosotros)}</p>
+  <button class="ver" type="button" data-id="${l.id}">Ver menú</button></div></section>`).join("")
+  + `<section class="pant pronto" aria-label="Próximamente"><div><b>Próximamente algo rico</b><p>Un restaurante más llega pronto a El Patio.</p>
+  <small>Muestra para El Patio con sus 7 restaurantes reales. Descripciones, menús y precios de ejemplo.<br>Fotos: T.Tseng, Thiago Fior de Castro, David Blaikie, Geoff Peters, Wotancito y Daria Yakovleva, en Wikimedia Commons (CC BY / CC0).<br>Hecho por sss.solutions</small></div></section>`);
 
-$("#locales").innerHTML = LOCALES.map((l) => `<article class="local" data-id="${l.id}" data-cat="${esc(l.cat)}" tabindex="0">
-  <div class="foto"><img src="${l.foto}" alt="" width="520" height="150" loading="lazy"></div>
-  <div class="txt"><h3>${esc(l.nombre)}</h3><div class="tipo"><b><i></i>Abierto</b><span>${esc(l.que)}</span></div>
-  <p class="nos">${esc(l.nosotros)}</p><button class="ver-menu" type="button">Ver menú</button></div></article>`).join("")
-  + `<div class="pronto" id="pronto"><b>Próximamente algo rico</b>Un restaurante más llega pronto a El Patio.</div>`;
+$("#nav").innerHTML = LOCALES.map((l) => `<button type="button" data-ir="${l.id}">${esc(l.nombre)}</button>`).join("");
+$("#puntos").innerHTML = LOCALES.map(() => "<i></i>").join("");
+$("#nav").addEventListener("click", (e) => { const b = e.target.closest("[data-ir]"); if (b) $("#r-" + b.dataset.ir).scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); });
 
-$("#filtros").addEventListener("click", (e) => {
-  const b = e.target.closest(".chip"); if (!b) return;
-  document.querySelectorAll(".chip").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
-  document.querySelectorAll(".local").forEach((l) => (l.hidden = b.dataset.cat !== "Todos" && l.dataset.cat !== b.dataset.cat));
-  $("#pronto").hidden = b.dataset.cat !== "Todos";
-});
+// Cuál restaurante está en pantalla: anima su entrada y marca su nombre abajo
+const navBtns = [...document.querySelectorAll("#nav button")], puntos = [...document.querySelectorAll("#puntos i")];
+const obs = new IntersectionObserver((xs) => xs.forEach((x) => {
+  if (!x.isIntersecting) return;
+  const s = x.target; document.querySelectorAll(".pant").forEach((p) => p.classList.toggle("on", p === s));
+  const i = s.dataset.i != null ? Number(s.dataset.i) : -1;
+  app.classList.toggle("dentro", s.id !== "inicio");
+  navBtns.forEach((b, j) => b.classList.toggle("on", j === i)); puntos.forEach((p, j) => p.classList.toggle("on", j === i));
+  if (i >= 0) navBtns[i].scrollIntoView({ block: "nearest", inline: "center", behavior: "smooth" });
+}), { root: rollo, threshold: 0.6 });
+document.querySelectorAll(".pant").forEach((p) => obs.observe(p));
 
+// Menú que sube desde abajo
 let actual = null, pedido = [];
-function abrir(id, empujar = true) {
-  actual = LOCALES.find((l) => l.id === id); if (!actual) return;
-  pedido = [];
-  $("#m-foto").src = actual.foto; $("#m-nombre").textContent = actual.nombre; $("#m-desc").textContent = actual.que;
-  $("#m-lista").innerHTML = `<p class="m-nos"><b>Nosotros</b>${esc(actual.nosotros)}</p>` + Object.entries(actual.menu).map(([sec, xs]) => `<p class="seccion">${esc(sec)}</p>` + xs.map(([n, d, p]) =>
+function abrir(id) {
+  actual = LOCALES.find((l) => l.id === id); if (!actual) return; pedido = [];
+  $("#h-nombre").textContent = actual.nombre; $("#h-nos").textContent = actual.nosotros;
+  $("#h-lista").innerHTML = Object.entries(actual.menu).map(([sec, xs]) => `<p class="seccion">${esc(sec)}</p>` + xs.map(([n, d, p]) =>
     `<div class="platillo"><b>${esc(n)}</b>${d ? `<span>${esc(d)}</span>` : ""}<em>${dinero(p)}</em><button class="mas" type="button" data-n="${esc(n)}" data-p="${p}" aria-label="Agregar ${esc(n)}">+</button></div>`).join("")).join("");
-  $("#menu").classList.add("abierto"); $("#menu").setAttribute("aria-hidden", "false"); $("#menu").scrollTop = 0;
-  document.body.style.overflow = "hidden"; barra();
-  if (empujar) history.pushState({ local: id }, "", "#" + id);
+  $("#h-lista").scrollTop = 0;
+  $("#hoja").classList.add("on"); $("#hoja").setAttribute("aria-hidden", "false"); $("#velo").classList.add("on"); barra();
 }
-function cerrar() { $("#menu").classList.remove("abierto"); $("#menu").setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; pedido = []; barra(); }
-$("#locales").addEventListener("click", (e) => { const b = e.target.closest(".local"); if (b) abrir(b.dataset.id); });
-$("#locales").addEventListener("keydown", (e) => { const b = e.target.closest(".local"); if (b && e.key === "Enter") abrir(b.dataset.id); });
-$("#volver").addEventListener("click", () => (history.state && history.state.local ? history.back() : cerrar()));
-addEventListener("popstate", (e) => (e.state && e.state.local ? abrir(e.state.local, false) : cerrar()));
+function cerrar() { $("#hoja").classList.remove("on"); $("#hoja").setAttribute("aria-hidden", "true"); $("#velo").classList.remove("on"); pedido = []; barra(); }
+rollo.addEventListener("click", (e) => { const b = e.target.closest(".ver"); if (b) abrir(b.dataset.id); });
+$("#cerrar").addEventListener("click", cerrar); $("#velo").addEventListener("click", cerrar);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#hoja").classList.contains("on") && !$("#vista").open) cerrar(); });
 
-$("#m-lista").addEventListener("click", (e) => {
+$("#h-lista").addEventListener("click", (e) => {
   const b = e.target.closest(".mas"); if (!b) return;
   pedido.push([b.dataset.n, Number(b.dataset.p)]);
   b.classList.add("listo"); b.textContent = String(pedido.filter((x) => x[0] === b.dataset.n).length);
@@ -253,18 +273,20 @@ $("#m-lista").addEventListener("click", (e) => {
   barra();
 });
 function barra() {
-  $("#pedir").classList.toggle("ver", pedido.length > 0 && $("#menu").classList.contains("abierto"));
+  $("#pedir").classList.toggle("on", pedido.length > 0 && $("#hoja").classList.contains("on"));
   $("#pedir-t").textContent = `Pedir ${pedido.length} por WhatsApp`;
   $("#pedir-total").textContent = dinero(pedido.reduce((a, x) => a + x[1], 0));
 }
-$("#pedir-btn").addEventListener("click", () => {
+$("#pedir").addEventListener("click", () => {
   const cuenta = {}; pedido.forEach(([n, p]) => { cuenta[n] = cuenta[n] || [0, p]; cuenta[n][0]++; });
   const lineas = Object.entries(cuenta).map(([n, [c, p]]) => `${c} x ${n}  ${dinero(c * p)}`).join("\n");
   $("#v-msg").textContent = `Pedido para ${actual.nombre}\nEl Patio, mesa ${mesa}\n\n${lineas}\n\nTotal: ${dinero(pedido.reduce((a, x) => a + x[1], 0))}`;
   $("#vista").showModal();
 });
-$("#v-cerrar").addEventListener("click", () => $("#vista").close());
-if (location.hash.length > 1) abrir(location.hash.slice(1), false);
+$("#v-ok").addEventListener("click", () => $("#vista").close());
+
+// Link directo a un restaurante: .../elpatio/#cristy
+if (location.hash.length > 1 && $("#r-" + location.hash.slice(1))) setTimeout(() => $("#r-" + location.hash.slice(1)).scrollIntoView(), 50);
 </script>
 </body>
 </html>

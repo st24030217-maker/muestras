@@ -85,10 +85,17 @@ export function initPatio3D({ canvas, pinsLayer, onSelectLocal, onReady }) {
         void main() {
           float h = clamp(vDir.y, 0.0, 1.0);
           vec3 col = mix(uHorizon, uZenith, pow(h, 0.52));
-          if (uStars > 0.01 && h > 0.08) {
-            vec2 sp = floor(vDir.xz / (h + 0.35) * 90.0);
-            float st = step(0.994, hash(sp)) * smoothstep(0.08, 0.35, h);
-            col += vec3(0.9, 0.95, 1.0) * st * uStars * (1.0 - uClouds * 0.85);
+          if (uStars > 0.01 && h > 0.07) {
+            vec2 grid = vDir.xz / (h + 0.42) * 58.0;
+            vec2 id = floor(grid);
+            vec2 lv = fract(grid) - 0.5;
+            float rnd = hash(id);
+            if (rnd > 0.968) {
+              vec2 jitter = (vec2(hash(id + 7.1), hash(id + 13.7)) - 0.5) * 0.55;
+              float d = length(lv - jitter);
+              float star = smoothstep(0.11, 0.015, d) * (0.6 + 0.4 * sin(uTime * 1.4 + rnd * 40.0));
+              col += vec3(0.92, 0.95, 1.0) * star * uStars * smoothstep(0.07, 0.34, h) * (1.0 - uClouds * 0.85);
+            }
           }
           if (uClouds > 0.02 && h > 0.03) {
             vec2 uv = vDir.xz / (h + 0.24) * 1.4 + vec2(uTime * 0.018, uTime * 0.008);
@@ -1665,24 +1672,58 @@ export function initPatio3D({ canvas, pinsLayer, onSelectLocal, onReady }) {
     if (pinsLayer && interactive) {
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
-      const padX = Math.min(82, w * 0.2);
-      const minY = 118;
-      const maxY = h - 88;
+      const minY = 128;
+      const maxY = h - 118;
+      const visibles = [];
+
       Object.values(localsMeta).forEach((m) => {
         const el = pinEls[m.id];
         if (!el) return;
         projVec.copy(m.pinPos).project(camera);
-        const inFront = projVec.z < 1 && projVec.x > -1.15 && projVec.x < 1.15 && projVec.y > -1.15 && projVec.y < 1.15;
+        const inFront = projVec.z < 1 && projVec.x > -1.1 && projVec.x < 1.1 && projVec.y > -1.1 && projVec.y < 1.1;
         const visible = inFront && !selectedId;
         el.style.opacity = visible ? "1" : "0";
         el.style.pointerEvents = visible ? "auto" : "none";
         if (visible) {
+          const bw = Math.max(92, el.offsetWidth || 120);
+          const padX = Math.min(bw / 2 + 10, w * 0.44);
           const rawX = (projVec.x * 0.5 + 0.5) * w;
           const rawY = (-projVec.y * 0.5 + 0.5) * h;
-          const px = Math.min(w - padX, Math.max(padX, rawX));
-          const py = Math.min(maxY, Math.max(minY, rawY));
-          el.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0) translate(-50%, -100%)`;
+          visibles.push({
+            el,
+            w: bw + 10,
+            h: 40,
+            x: Math.min(w - padX, Math.max(padX, rawX)),
+            y: Math.min(maxY, Math.max(minY, rawY)),
+            padX,
+          });
         }
+      });
+
+      for (let pass = 0; pass < 4; pass++) {
+        for (let i = 0; i < visibles.length; i++) {
+          for (let j = i + 1; j < visibles.length; j++) {
+            const a = visibles[i], b = visibles[j];
+            const dx = b.x - a.x, dy = b.y - a.y;
+            const ox = (a.w + b.w) * 0.5 - Math.abs(dx);
+            const oy = (a.h + b.h) * 0.5 - Math.abs(dy);
+            if (ox > 0 && oy > 0) {
+              if (oy <= ox * 0.85) {
+                const push = oy * 0.55 * (dy >= 0 ? 1 : -1);
+                a.y = Math.min(maxY, Math.max(minY, a.y - push));
+                b.y = Math.min(maxY, Math.max(minY, b.y + push));
+              } else {
+                const push = ox * 0.52 * (dx >= 0 ? 1 : -1);
+                a.x = Math.min(w - a.padX, Math.max(a.padX, a.x - push));
+                b.x = Math.min(w - b.padX, Math.max(b.padX, b.x + push));
+              }
+            }
+          }
+        }
+      }
+
+      visibles.forEach((p) => {
+        p.el.style.transform = `translate3d(${p.x.toFixed(1)}px, ${p.y.toFixed(1)}px, 0) translate(-50%, -100%)`;
       });
     }
   }

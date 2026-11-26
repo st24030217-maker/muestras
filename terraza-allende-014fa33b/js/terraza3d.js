@@ -491,12 +491,12 @@ export function initTerraza3D({ canvas, pinsLayer, mesa = 12, onSelectLocal, onR
     roofPlane.position.set(0, 4.64, 0);
     scene.add(roofPlane);
 
-    // Faldones traslúcidos de malla sombra terracota en laterales altos y velaria hacia el arco
-    const mallaDer = new THREE.Mesh(new THREE.PlaneGeometry(16.6, 1.5), mat.mallaSombra);
+    // Faldones traslúcidos de malla sombra terracota por encima de los tableros de Lotería y Neón
+    const mallaDer = new THREE.Mesh(new THREE.PlaneGeometry(16.6, 1.05), mat.mallaSombra);
     mallaDer.rotation.y = -Math.PI / 2;
-    mallaDer.position.set(10.34, 3.74, 0);
-    const mallaTras = new THREE.Mesh(new THREE.PlaneGeometry(20.6, 1.5), mat.mallaSombra);
-    mallaTras.position.set(0, 3.74, -8.14);
+    mallaDer.position.set(10.34, 4.04, 0);
+    const mallaTras = new THREE.Mesh(new THREE.PlaneGeometry(20.6, 1.35), mat.mallaSombra);
+    mallaTras.position.set(0, 3.84, -8.14);
     // Velaria terracota inclinada interior junto al arco (como en 3_fachada.jpg)
     const velaria = new THREE.Mesh(new THREE.PlaneGeometry(5.6, 3.2), mat.mallaSombra);
     velaria.rotation.x = Math.PI / 2 + 0.18;
@@ -914,8 +914,8 @@ export function initTerraza3D({ canvas, pinsLayer, mesa = 12, onSelectLocal, onR
 
   zona("mesa", [tuMesa.x, 2.2, tuMesa.z], [tuMesa.x, 0.88, tuMesa.z], [tuMesa.x - 1.4, 3.2, tuMesa.z + 4.4], [2.4, 1.6, 2.4]);
   zona("barra", [-5.85, 4.25, -1.2], [-6.2, 1.85, -1.2], [2.2, 2.75, 2.0], [4.6, 3.5, 8.0]);
-  zona("neon", [10.0, 3.65, -3.1], [10.35, 2.12, -3.1], [4.1, 2.12, -3.1], [1.6, 3.2, 3.0]);
-  zona("loteria", [10.0, 3.65, 2.1], [10.35, 2.12, 2.1], [4.1, 2.12, 2.1], [1.6, 3.2, 3.0]);
+  zona("neon", [10.0, 3.65, -3.1], [10.35, 2.12, -3.1], [5.4, 2.08, -3.1], [1.6, 3.2, 3.0]);
+  zona("loteria", [10.0, 3.65, 2.1], [10.35, 2.12, 2.1], [5.4, 2.08, 2.1], [1.6, 3.2, 3.0]);
   zona("pantalla", [-0.8, 4.1, -4.5], [-0.8, 3.15, -4.5], [-0.6, 2.35, 1.4], [2.4, 2.6, 1.8]);
   zona("entrada", [0, 5.75, 8.5], [0, 2.45, 8.5], [0.6, 2.45, 20.6], [12.0, 4.5, 1.8]);
 
@@ -1025,7 +1025,7 @@ export function initTerraza3D({ canvas, pinsLayer, mesa = 12, onSelectLocal, onR
   const PRESETS = {
     vista: { target: [0.2, 1.6, 0.4], theta: 1.04, phi: 0.95, radius: 24.8 },
     entrada: { target: [0, 2.45, 6.2], theta: Math.PI / 2 - 0.04, phi: 1.46, radius: 14.8 },
-    patio: { target: [-5.6, 2.0, -1.2], theta: 0.16, phi: 1.38, radius: 9.4 },
+    patio: { target: [-5.8, 1.85, -1.2], theta: 0.14, phi: 1.44, radius: 8.9 },
   };
   let interactive = false, autoOrbit = true, selectedId = null;
   const current = {

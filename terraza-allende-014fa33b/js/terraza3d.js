@@ -273,29 +273,34 @@ export function initTerraza3D({ canvas, pinsLayer, mesa = 12, onSelectLocal, onR
   arcoGlow.position.set(1.5, 1.22, -8.58);
   scene.add(arcoGlow);
 
-  // Tablero de Lotería real en el muro derecho (z = +2.3)
+  // Tablero de Lotería real en el muro derecho (z = +2.3) con marco metálico y luz cálida
   const loteriaBoard = new THREE.Group();
   loteriaBoard.position.set(10.42, 2.08, 2.3);
   loteriaBoard.rotation.y = -Math.PI / 2;
-  caja(2.48, 2.48, 0.08, mat.estucoTerracota, 0, 0, -0.04, true, loteriaBoard);
+  caja(2.58, 2.58, 0.06, mat.aceroNegro, 0, 0, -0.06, true, loteriaBoard);
+  caja(2.48, 2.48, 0.08, mat.estucoTerracota, 0, 0, -0.03, true, loteriaBoard);
   const loteriaFace = new THREE.Mesh(
     new THREE.PlaneGeometry(2.38, 2.38),
-    new THREE.MeshStandardMaterial({ map: tex.loteriaWallTex, roughness: 0.65 })
+    new THREE.MeshStandardMaterial({ map: tex.loteriaWallTex, roughness: 0.55 })
   );
-  loteriaFace.position.z = 0.01;
+  loteriaFace.position.z = 0.015;
   loteriaBoard.add(loteriaFace);
   scene.add(loteriaBoard);
+  const loteriaLight = new THREE.PointLight(0xffcf94, 12, 8.5, 1.5);
+  loteriaLight.position.set(8.9, 2.4, 2.3);
+  scene.add(loteriaLight);
 
   // Letrero neón real "ESTA ES la vida QUE NOS gusta" en el muro derecho (z = -2.9)
   const neonBoard = new THREE.Group();
   neonBoard.position.set(10.42, 2.08, -2.9);
   neonBoard.rotation.y = -Math.PI / 2;
-  caja(2.48, 2.48, 0.08, new THREE.MeshStandardMaterial({ color: 0x6e2719, roughness: 0.78 }), 0, 0, -0.04, true, neonBoard);
+  caja(2.58, 2.58, 0.06, mat.aceroNegro, 0, 0, -0.06, true, neonBoard);
+  caja(2.48, 2.48, 0.08, new THREE.MeshStandardMaterial({ color: 0x6e2719, roughness: 0.78 }), 0, 0, -0.03, true, neonBoard);
   const neonFace = new THREE.Mesh(
     new THREE.PlaneGeometry(2.38, 2.38),
     new THREE.MeshBasicMaterial({ map: tex.neonWallTex, toneMapped: false })
   );
-  neonFace.position.z = 0.01;
+  neonFace.position.z = 0.015;
   neonBoard.add(neonFace);
   scene.add(neonBoard);
   const neonLight = new THREE.PointLight(0xff842b, 14, 9, 1.5);
@@ -724,6 +729,7 @@ export function initTerraza3D({ canvas, pinsLayer, mesa = 12, onSelectLocal, onR
     fachadaLuz.intensity = 3 + noche * 15;
     arcoLuz.intensity = 3 + noche * 11;
     muroDerLuz.intensity = 3 + noche * 12;
+    loteriaLight.intensity = 3 + noche * 9;
     neonLight.intensity = 4 + noche * 10;
     haloMat.opacity = 0.1 + noche * 0.65;
     focoMat.color.setHex(noche > 0.35 ? 0xffe4a8 : 0xd6d3c9);
@@ -904,7 +910,7 @@ export function initTerraza3D({ canvas, pinsLayer, mesa = 12, onSelectLocal, onR
     const dt = Math.min(0.05, (now - ultimo) / 1000);
     ultimo = now;
 
-    if (autoOrbit && !quieto) goal.theta += dt * (interactive ? 0.08 : 0.12);
+    if (autoOrbit && !quieto) goal.theta += dt * (interactive ? 0.025 : 0.032);
     const k = 1 - Math.exp(-dt * 7.5);
     current.target.lerp(goal.target, k);
     current.theta += angulo(current.theta, goal.theta) * k;

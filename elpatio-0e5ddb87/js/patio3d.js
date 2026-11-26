@@ -1596,7 +1596,7 @@ export function initPatio3D({ canvas, pinsLayer, onSelectLocal, onReady }) {
     lastTs = now;
 
     if (autoOrbit && !reducedMotion) {
-      goal.theta += dt * (interactive ? 0.08 : 0.13);
+      goal.theta += dt * (interactive ? 0.025 : 0.032);
     }
 
     const damp = 1 - Math.exp(-dt * 7.5);

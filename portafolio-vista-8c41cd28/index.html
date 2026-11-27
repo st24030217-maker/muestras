@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>sss.solutions | Páginas web, menús digitales y apps para tu negocio</title>
+<meta name="description" content="Sebastián Salinas hace páginas web, menús digitales y apps con pedidos a tu WhatsApp para negocios de Torreón, Gómez Palacio, Lerdo y todo México. Paquete completo $4,000 en 2 pagos.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#1F33D6">
+<meta property="og:title" content="sss.solutions | Tu negocio, en el celular de tus clientes">
+<meta property="og:description" content="Páginas web, menús digitales y apps con pedidos a tu WhatsApp. Paquete completo $4,000 en 2 pagos.">
+<meta property="og:image" content="img/sebastian.webp">
+<link rel="icon" type="image/png" href="img/sss.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="img/sebastian.webp">
+<style>
+:root {
+  --cobalto: #1F33D6;
+  --cobalto-hondo: #0E1A7A;
+  --papel: #F4F4F0;
+  --negro: #000;
+  --rotulo: #FFE24A;
+  --papel-suave: rgba(244, 244, 240, .74);
+  --negro-suave: rgba(0, 0, 0, .62);
+  --barra-alto: 54px;
+  --dock-alto: 58px;
+  --margen: 22px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  font-optical-sizing: auto;
+  background: var(--cobalto-hondo);
+  color: var(--papel);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+button, input, textarea { font: inherit; color: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--rotulo); outline-offset: 3px; }
+
+/* Fondo de escritorio: la foto en azul, desenfocada, detrás del "celular" */
+.fondo-escritorio {
+  position: fixed; inset: 0; z-index: 0;
+  background: var(--cobalto) url("img/sebastian.webp") center / cover;
+  background-blend-mode: multiply;
+  filter: blur(40px) saturate(1.2);
+  transform: scale(1.2);
+  opacity: .55;
+}
+
+.app {
+  position: relative; z-index: 1;
+  height: 100svh; max-width: 460px; margin: 0 auto;
+  overflow: hidden;
+  background: var(--cobalto);
+  transition: background-color .35s ease;
+}
+@media (min-width: 700px) {
+  .app { height: min(100svh, 900px); top: 50%; transform: translateY(-50%); border-radius: 28px; box-shadow: 0 40px 120px rgba(0, 0, 30, .55); }
+}
+
+/* ---------- Barra de historias (arriba) ---------- */
+.barra {
+  position: absolute; z-index: 5; top: 0; left: 0; right: 0;
+  padding: calc(env(safe-area-inset-top) + 10px) 12px 0;
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px;
+  color: var(--papel);
+  transition: color .35s ease;
+}
+.app[data-tema="claro"] .barra { color: var(--negro); }
+.barra button {
+  background: none; border: 0; cursor: pointer;
+  display: flex; flex-direction: column; gap: 7px;
+  padding: 4px 0 8px; text-align: left;
+  font-size: 12px; font-weight: 600; letter-spacing: .01em;
+  opacity: .6;
+}
+.barra button::before {
+  content: ""; display: block; height: 3px; border-radius: 3px;
+  background: currentColor; opacity: .35;
+}
+.barra button[aria-current="true"] { opacity: 1; }
+.barra button[aria-current="true"]::before,
+.barra button.visto::before { opacity: 1; }
+
+/* ---------- Pistas: las 5 pantallas en fila, se pasan de lado ---------- */
+.pistas {
+  display: flex; height: 100%;
+  overflow-x: auto; overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.pistas::-webkit-scrollbar { display: none; }
+
+.pantalla {
+  flex: 0 0 100%; height: 100%;
+  scroll-snap-align: start; scroll-snap-stop: always;
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + var(--barra-alto) + 18px) var(--margen) calc(env(safe-area-inset-bottom) + var(--dock-alto) + 30px);
+}
+.pantalla.clara { background: var(--papel); color: var(--negro); }
+
+.titulo {
+  font-size: clamp(2.5rem, 12.2vw, 3.6rem);
+  font-stretch: 75%; font-weight: 800;
+  line-height: .92; letter-spacing: -.015em;
+  text-wrap: balance;
+}
+.entrada { font-size: 1rem; line-height: 1.45; max-width: 34ch; }
+.pantalla:not(.clara) .entrada { color: var(--papel-suave); }
+.pantalla.clara .entrada { color: var(--negro-suave); }
+
+/* Un solo movimiento por pantalla: el título entra cuando llegas */
+.pantalla .titulo { transition: transform .6s cubic-bezier(.2, .8, .2, 1), opacity .6s ease; }
+.pantalla:not(.activa) .titulo { transform: translateY(22px); opacity: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .pantalla .titulo { transition: none; }
+  .pantalla:not(.activa) .titulo { transform: none; opacity: 1; }
+  .app, .barra, .dock { transition: none; }
+}
+
+/* ---------- 1. Inicio ---------- */
+.p-inicio { justify-content: flex-end; }
+.foto-duotono { position: absolute; inset: 0; background: var(--cobalto); }
+.foto-duotono img {
+  display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 18%;
+  filter: grayscale(1) contrast(1.2) brightness(1.08);
+  mix-blend-mode: multiply;
+}
+.foto-duotono::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(14, 26, 122, .55) 0%, rgba(14, 26, 122, 0) 22%, rgba(14, 26, 122, 0) 38%, var(--cobalto-hondo) 82%);
+}
+.p-inicio > *:not(.foto-duotono) { position: relative; }
+.firma { font-size: .95rem; font-weight: 600; margin-bottom: 12px; color: var(--papel); }
+.firma img { width: 26px; height: auto; vertical-align: -5px; margin-right: 6px; }
+.p-inicio .titulo { font-size: clamp(2.8rem, 13.6vw, 4rem); }
+.p-inicio .entrada { margin-top: 14px; }
+.desliza {
+  margin-top: 12px; align-self: flex-start;
+  background: none; border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .9rem; font-weight: 600; color: var(--papel);
+}
+.desliza svg { width: 18px; height: 18px; }
+
+/* ---------- 2. Servicios ---------- */
+.p-servicios .titulo { margin-bottom: 8px; }
+.servicios { list-style: none; flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; margin-top: 12px; }
+.servicios li { padding: 16px 0; border-top: 2px solid var(--negro); }
+.servicios li:last-child { border-bottom: 2px solid var(--negro); }
+.servicios h3 { font-size: clamp(1.6rem, 7.6vw, 2.1rem); font-stretch: 75%; font-weight: 800; line-height: 1; color: var(--cobalto); }
+.servicios p { font-size: 1rem; line-height: 1.35; margin-top: 5px; }
+.mas-grande { margin-top: 16px; font-size: .92rem; line-height: 1.4; color: var(--negro-suave); }
+
+/* ---------- 3. Clientes ---------- */
+.p-clientes { gap: 14px; }
+.cabeza-clientes { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+.ver-demos {
+  flex-shrink: 0; background: none; border: 0; cursor: pointer;
+  font-size: .85rem; font-weight: 600; color: var(--papel);
+  text-decoration: underline; text-underline-offset: 3px; padding: 4px 0;
+}
+.mosaico {
+  flex: 1; min-height: 0;
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 8px;
+}
+.cliente {
+  position: relative; overflow: hidden; border: 0; cursor: pointer;
+  border-radius: 14px; background: var(--cobalto-hondo); text-align: left;
+}
+.cliente img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cliente.contener img { object-fit: contain; padding: 14px; background: var(--papel); }
+.cliente span {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 26px 10px 9px;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .78));
+  font-size: .98rem; font-weight: 700; line-height: 1.1; color: #fff;
+}
+.cliente span small { display: block; font-size: .78rem; font-weight: 500; opacity: .8; margin-top: 2px; }
+
+/* ---------- 4. Precio (lo memorable) ---------- */
+.p-precio .que { font-size: 1.05rem; font-weight: 700; }
+.cifra {
+  font-size: min(43vw, 12.5rem);
+  font-stretch: 75%; font-weight: 800;
+  line-height: .82; letter-spacing: -.035em;
+  color: var(--cobalto);
+  font-variant-numeric: tabular-nums;
+  margin: 4px 0 14px -0.04em;
+}
+.incluye { font-size: 1rem; line-height: 1.4; color: var(--negro-suave); max-width: 34ch; }
+.p-precio { justify-content: center; }
+.pagos { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 26px; }
+.pagos div { border-top: 6px solid var(--cobalto); padding-top: 10px; }
+.pagos strong { display: block; font-size: clamp(1.9rem, 9vw, 2.4rem); font-stretch: 75%; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.pagos span { display: block; font-size: .92rem; line-height: 1.3; margin-top: 4px; color: var(--negro-suave); }
+.letra-chica { margin-top: 16px; font-size: .92rem; line-height: 1.4; }
+.letra-chica b { font-weight: 700; }
+
+/* ---------- 5. Contacto ---------- */
+.p-contacto { gap: 14px; padding-bottom: calc(env(safe-area-inset-bottom) + 22px); }
+.formulario { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.formulario label { font-size: .85rem; font-weight: 600; color: var(--papel-suave); }
+.formulario input, .formulario textarea {
+  width: 100%; border: 0; border-radius: 12px;
+  background: rgba(255, 255, 255, .12); color: var(--papel);
+  padding: 12px 14px; font-size: 1rem;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, .22);
+}
+.formulario textarea { resize: none; height: 78px; }
+.formulario ::placeholder { color: rgba(244, 244, 240, .5); }
+.formulario input:focus, .formulario textarea:focus { outline: none; box-shadow: inset 0 0 0 2px var(--rotulo); }
+.datos { list-style: none; margin-top: auto; display: grid; gap: 10px; font-size: .95rem; line-height: 1.35; }
+.datos a { font-weight: 700; text-decoration: none; }
+.datos span { color: var(--papel-suave); }
+
+/* ---------- Botón de WhatsApp (amarillo rótulo: solo aquí) ---------- */
+.btn-wa, .dock {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  height: var(--dock-alto); border: 0; border-radius: 999px; cursor: pointer;
+  background: var(--rotulo); color: var(--negro);
+  font-size: 1.05rem; font-weight: 800; text-decoration: none;
+}
+.btn-wa svg, .dock svg { width: 22px; height: 22px; }
+.btn-wa:active, .dock:active { transform: scale(.98); }
+.dock {
+  position: absolute; z-index: 6;
+  left: var(--margen); right: var(--margen);
+  bottom: calc(env(safe-area-inset-bottom) + 18px);
+  box-shadow: 0 10px 30px rgba(0, 0, 40, .35);
+  transition: transform .35s ease, opacity .35s ease;
+}
+.app[data-pantalla="4"] .dock { transform: translateY(140%); opacity: 0; pointer-events: none; }
+
+/* ---------- Hoja de detalle (cliente / demos) ---------- */
+dialog.hoja {
+  margin: auto auto 0; width: 100%; max-width: 460px; max-height: 88svh;
+  border: 0; border-radius: 24px 24px 0 0; padding: 0;
+  background: var(--papel); color: var(--negro);
+  overflow: hidden;
+}
+dialog.hoja::backdrop { background: rgba(0, 0, 30, .55); }
+dialog.hoja[open] { animation: subir .32s cubic-bezier(.2, .8, .2, 1); }
+@keyframes subir { from { transform: translateY(100%); } }
+@media (prefers-reduced-motion: reduce) { dialog.hoja[open] { animation: none; } }
+.hoja-foto { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; display: block; background: var(--cobalto); }
+.hoja-foto.contener { object-fit: contain; padding: 18px; }
+.hoja-cuerpo { padding: 18px var(--margen) calc(env(safe-area-inset-bottom) + 22px); display: grid; gap: 10px; }
+.hoja-giro { font-size: .9rem; font-weight: 600; color: var(--cobalto); }
+.hoja-nombre { font-size: 2.2rem; font-stretch: 75%; font-weight: 800; line-height: .95; }
+.hoja-desc { font-size: 1rem; line-height: 1.45; color: var(--negro-suave); }
+.hoja-acciones { display: flex; gap: 10px; margin-top: 6px; }
+.btn-linea {
+  flex: 1; height: 52px; border-radius: 999px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--negro); color: var(--papel); border: 0;
+  font-size: 1rem; font-weight: 700; text-decoration: none;
+}
+.btn-cerrar {
+  height: 52px; padding: 0 20px; border-radius: 999px; cursor: pointer;
+  background: none; border: 2px solid var(--negro); font-weight: 700;
+}
+.demos { list-style: none; display: grid; gap: 10px; }
+.demos a { display: grid; grid-template-columns: 64px 1fr; gap: 12px; align-items: center; text-decoration: none; }
+.demos img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: var(--cobalto); }
+.demos b { display: block; font-size: 1.05rem; }
+.demos span { font-size: .88rem; color: var(--negro-suave); }
+
+/* Pantallas bajitas (iPhone SE y similares) */
+@media (max-height: 700px) {
+  :root { --barra-alto: 46px; --dock-alto: 52px; }
+  .titulo { font-size: clamp(2.1rem, 10.5vw, 2.8rem); }
+  .p-inicio .titulo { font-size: clamp(2.3rem, 11.5vw, 3rem); }
+  .entrada, .servicios p, .incluye { font-size: .92rem; }
+  .servicios li { padding: 10px 0; }
+  .servicios h3 { font-size: 1.5rem; }
+  .cifra { font-size: min(38vw, 7.5rem); }
+  .mas-grande, .letra-chica { font-size: .85rem; margin-top: 10px; }
+  .formulario textarea { height: 58px; }
+  .datos { gap: 6px; font-size: .88rem; }
+  .p-contacto { gap: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="fondo-escritorio" aria-hidden="true"></div>
+
+<div class="app" data-pantalla="0" data-tema="oscuro">
+  <nav class="barra" aria-label="Secciones">
+    <button type="button" data-ir="0" aria-current="true">Inicio</button>
+    <button type="button" data-ir="1">Servicios</button>
+    <button type="button" data-ir="2">Clientes</button>
+    <button type="button" data-ir="3">Precio</button>
+    <button type="button" data-ir="4">Contacto</button>
+  </nav>
+
+  <main class="pistas" id="pistas">
+    <!-- 1. Inicio -->
+    <section class="pantalla p-inicio activa" data-tema="oscuro" aria-label="Inicio">
+      <div class="foto-duotono" aria-hidden="true"><img src="img/sebastian.webp" alt=""></div>
+      <p class="firma"><img src="img/sss.png" alt="">Soy Sebastián Salinas, de sss.solutions</p>
+      <h1 class="titulo">Tu negocio, en el celular de tus clientes.</h1>
+      <p class="entrada">Páginas web, menús digitales y apps con pedidos a tu WhatsApp. En persona en Torreón, Gómez Palacio y Lerdo, y por videollamada en todo México.</p>
+      <button type="button" class="desliza" data-ir="1">
+        Desliza para conocernos
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </section>
+
+    <!-- 2. Servicios -->
+    <section class="pantalla p-servicios clara" data-tema="claro" aria-label="Servicios">
+      <h2 class="titulo">Esto hacemos por tu negocio.</h2>
+      <ul class="servicios">
+        <li><h3>Página web</h3><p>Que te encuentren en Google y te escriban con un toque.</p></li>
+        <li><h3>Menú o catálogo digital</h3><p>Tus clientes eligen con fotos y precios, y el pedido te llega completo a tu WhatsApp.</p></li>
+        <li><h3>App de citas</h3><p>Tus clientes agendan solos y les llega recordatorio.</p></li>
+      </ul>
+      <p class="mas-grande">¿Algo más grande? Tienda en línea, asistente que contesta tu WhatsApp o un sistema a tu medida: lo platicamos y te cotizamos.</p>
+    </section>
+
+    <!-- 3. Clientes -->
+    <section class="pantalla p-clientes" data-tema="oscuro" aria-label="Clientes">
+      <div class="cabeza-clientes">
+        <h2 class="titulo">Ya trabajan con esto.</h2>
+        <button type="button" class="ver-demos" id="ver-demos">Ver demos</button>
+      </div>
+      <div class="mosaico">
+        <button type="button" class="cliente" data-cliente="barberia"><img src="img/barberia.webp" alt="" loading="lazy"><span>Barbería Vázquez<small>Lerdo</small></span></button>
+        <button type="button" class="cliente" data-cliente="compadres"><img src="img/compadres.webp" alt="" loading="lazy"><span>Los Compadres<small>Taquería</small></span></button>
+        <button type="button" class="cliente" data-cliente="milea"><img src="img/milea.webp" alt="" loading="lazy"><span>Milea Studio<small>Papelería</small></span></button>
+        <button type="button" class="cliente" data-cliente="kbhuates"><img src="img/kbhuates.webp" alt="" loading="lazy"><span>KB Huates<small>Botanas</small></span></button>
+        <button type="button" class="cliente" data-cliente="copa"><img src="img/copa.webp" alt="" loading="lazy" style="object-position:50% 0;transform:scale(1.4);transform-origin:50% 0"><span>Copa Zona Laguna<small>Torneo</small></span></button>
+        <button type="button" class="cliente contener" data-cliente="epad"><img src="img/epad.webp" alt="" loading="lazy"><span>EPAD<small>Educación</small></span></button>
+      </div>
+    </section>
+
+    <!-- 4. Precio -->
+    <section class="pantalla p-precio clara" data-tema="claro" aria-label="Precio">
+      <p class="que">Paquete completo</p>
+      <p class="cifra" aria-label="4,000 pesos">$4,000</p>
+      <p class="incluye">Página web, app y menú o catálogo con pedidos a tu WhatsApp. Diseñado a tu medida, con soporte después de entregarlo.</p>
+      <div class="pagos">
+        <div><strong>$2,000</strong><span>para arrancar</span></div>
+        <div><strong>$2,000</strong><span>cuando ya lo tienes funcionando</span></div>
+      </div>
+      <p class="letra-chica"><b>Ves y apruebas el diseño antes de programar.</b> ¿Prefieres pagos más chicos? Pregunta por el plan en 3 pagos.</p>
+    </section>
+
+    <!-- 5. Contacto -->
+    <section class="pantalla p-contacto" data-tema="oscuro" aria-label="Contacto">
+      <h2 class="titulo">Platiquemos de tu negocio.</h2>
+      <form class="formulario" id="formulario">
+        <label for="nombre">Tu nombre y tu negocio</label>
+        <input id="nombre" name="nombre" required autocomplete="name" placeholder="Ana, Taquería La Esquina">
+        <label for="mensaje">¿Qué necesitas?</label>
+        <textarea id="mensaje" name="mensaje" required placeholder="Un menú digital con pedidos por WhatsApp"></textarea>
+        <button type="submit" class="btn-wa">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>
+          Enviar por WhatsApp
+        </button>
+      </form>
+      <ul class="datos">
+        <li><a href="https://wa.me/528719164677" target="_blank" rel="noopener">871 916 4677</a> <span>WhatsApp de Sebastián</span></li>
+        <li><a href="https://wa.me/528718321968" target="_blank" rel="noopener">871 832 1968</a> <span>Asistente de ventas. Si te escribimos desde aquí, somos nosotros.</span></li>
+        <li><a href="https://www.instagram.com/ssss.olutions" target="_blank" rel="noopener">@ssss.olutions</a> <span>Instagram con fotos y videos de los proyectos</span></li>
+      </ul>
+    </section>
+  </main>
+
+  <a class="dock" href="https://wa.me/528719164677?text=Hola%20Sebasti%C3%A1n%2C%20vi%20tu%20p%C3%A1gina%20y%20quiero%20informes" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3Z"/></svg>
+    Escríbeme por WhatsApp
+  </a>
+
+  <dialog class="hoja" id="hoja">
+    <img class="hoja-foto" id="hoja-foto" src="" alt="">
+    <div class="hoja-cuerpo">
+      <p class="hoja-giro" id="hoja-giro"></p>
+      <h3 class="hoja-nombre" id="hoja-nombre"></h3>
+      <p class="hoja-desc" id="hoja-desc"></p>
+      <div class="hoja-acciones">
+        <a class="btn-linea" id="hoja-abrir" href="#" target="_blank" rel="noopener">Abrir su página</a>
+        <button type="button" class="btn-cerrar" data-cerrar>Cerrar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="hoja" id="hoja-demos">
+    <div class="hoja-cuerpo">
+      <p class="hoja-giro">Más trabajos y demos</p>
+      <h3 class="hoja-nombre">Ideas para tu negocio</h3>
+      <ul class="demos">
+        <li><a href="https://tik-educa-oficial.vercel.app/" target="_blank" rel="noopener"><img src="img/tikeduca.webp" alt=""><div><b>TikEduca</b><span>Página de congreso con registro de asistentes</span></div></a></li>
+        <li><a href="https://st24030217-maker.github.io/tarjeta-fidelidad-/" target="_blank" rel="noopener"><img src="img/fidelidad.webp" alt=""><div><b>Tarjeta de fidelidad</b><span>Demo: tu cliente junta sellos y gana premios</span></div></a></li>
+        <li><a href="https://proyecto-maps.vercel.app/" target="_blank" rel="noopener"><img src="img/maps.webp" alt=""><div><b>Mapa de negocios</b><span>Demo: mapa con puntos de La Laguna</span></div></a></li>
+      </ul>
+      <div class="hoja-acciones"><button type="button" class="btn-cerrar" data-cerrar style="flex:1">Cerrar</button></div>
+    </div>
+  </dialog>
+</div>
+
+<script>
+(() => {
+  const app = document.querySelector(".app");
+  const pistas = document.getElementById("pistas");
+  const pantallas = [...pistas.children];
+  const botones = [...document.querySelectorAll(".barra button")];
+
+  const ir = (i) => pistas.scrollTo({ left: i * pistas.clientWidth, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  document.querySelectorAll("[data-ir]").forEach((b) => b.addEventListener("click", () => ir(+b.dataset.ir)));
+
+  const marcar = (i) => {
+    app.dataset.pantalla = i;
+    app.dataset.tema = pantallas[i].dataset.tema;
+    pantallas.forEach((p, k) => p.classList.toggle("activa", k === i));
+    botones.forEach((b, k) => {
+      b.setAttribute("aria-current", k === i ? "true" : "false");
+      b.classList.toggle("visto", k < i);
+    });
+  };
+  const obs = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && marcar(pantallas.indexOf(e.target))), { root: pistas, threshold: 0.6 });
+  pantallas.forEach((p) => obs.observe(p));
+
+  document.addEventListener("keydown", (e) => {
+    if (document.querySelector("dialog[open]") || /INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    const i = +app.dataset.pantalla;
+    if (e.key === "ArrowRight") ir(Math.min(i + 1, pantallas.length - 1));
+    if (e.key === "ArrowLeft") ir(Math.max(i - 1, 0));
+  });
+
+  // Clientes reales
+  const clientes = {
+    barberia: { nombre: "Barbería Vázquez", giro: "Barbería en Lerdo", foto: "img/barberia.webp", url: "https://barberia-vazquez.vercel.app/", desc: "Sus clientes agendan su corte desde el celular y compran tarjetas de regalo en línea." },
+    compadres: { nombre: "Los Compadres", giro: "Taquería", foto: "img/compadres.webp", url: "https://st24030217-maker.github.io/MENU-COMPADRES/", desc: "Menú digital con fotos y video de sus tacos, para pedir rápido desde la mesa." },
+    milea: { nombre: "Milea Studio", giro: "Papelería", foto: "img/milea.webp", url: "https://st24030217-maker.github.io/catalogo-milea-/", desc: "Catálogo con buscador: sus clientes eligen y cotizan directo por WhatsApp." },
+    kbhuates: { nombre: "KB Huates", giro: "Botanas", foto: "img/kbhuates.webp", url: "https://la-dupla-ttak.vercel.app/", desc: "Sus clientes arman su pedido y le llega completo a su WhatsApp." },
+    copa: { nombre: "Copa Zona Laguna", giro: "Torneo", foto: "img/copa.webp", url: "https://st24030217-maker.github.io/3ERA-COPA-ZONA-LAGUNA/", desc: "Registro de competidores en línea, con panel para el organizador." },
+    epad: { nombre: "EPAD", giro: "Educación", foto: "img/epad.webp", url: "https://epad-ofical.vercel.app/", desc: "Página para maestros de todo México que se preparan para la USICAMM, hecha para aparecer en Google.", contener: true },
+  };
+  const hoja = document.getElementById("hoja");
+  document.querySelectorAll("[data-cliente]").forEach((b) => b.addEventListener("click", () => {
+    const c = clientes[b.dataset.cliente];
+    const foto = document.getElementById("hoja-foto");
+    foto.src = c.foto;
+    foto.classList.toggle("contener", !!c.contener);
+    document.getElementById("hoja-giro").textContent = c.giro;
+    document.getElementById("hoja-nombre").textContent = c.nombre;
+    document.getElementById("hoja-desc").textContent = c.desc;
+    document.getElementById("hoja-abrir").href = c.url;
+    hoja.showModal();
+  }));
+  document.getElementById("ver-demos").addEventListener("click", () => document.getElementById("hoja-demos").showModal());
+  document.querySelectorAll("dialog").forEach((d) => {
+    d.addEventListener("click", (e) => { if (e.target === d || e.target.closest("[data-cerrar]")) d.close(); });
+  });
+
+  // Formulario: arma el mensaje y abre el WhatsApp de Sebastián
+  document.getElementById("formulario").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const f = e.target;
+    const texto = `Hola Sebastián, soy ${f.nombre.value.trim()}. ${f.mensaje.value.trim()}`;
+    window.open(`https://wa.me/528719164677?text=${encodeURIComponent(texto)}`, "_blank", "noopener");
+  });
+})();
+</script>
+</body>
+</html>

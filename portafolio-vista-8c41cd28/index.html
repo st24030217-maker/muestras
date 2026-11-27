@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>sss.solutions | Páginas web, menús digitales y apps para tu negocio</title>
 <meta name="description" content="Sebastián Salinas hace páginas web, menús digitales y apps con pedidos a tu WhatsApp para negocios de Torreón, Gómez Palacio, Lerdo y todo México. Paquete completo $4,000 en 2 pagos.">
-<meta name="robots" content="noindex">
 <meta name="theme-color" content="#1F33D6">
 <meta property="og:title" content="sss.solutions | Tu negocio, en el celular de tus clientes">
 <meta property="og:description" content="Páginas web, menús digitales y apps con pedidos a tu WhatsApp. Paquete completo $4,000 en 2 pagos.">
@@ -170,21 +169,46 @@ a { color: inherit; }
 }
 .mosaico {
   flex: 1; min-height: 0;
-  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 8px;
+  display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 14px 12px; padding: 4px 4px 0;
 }
+/* Cada cliente es una foto impresa pegada al tablero: marco de papel, pie con el nombre */
 .cliente {
-  position: relative; overflow: hidden; border: 0; cursor: pointer;
-  border-radius: 14px; background: var(--cobalto-hondo); text-align: left;
+  --giro: -2.2deg;
+  position: relative; min-height: 0; border: 0; cursor: pointer; text-align: left;
+  display: flex; flex-direction: column;
+  padding: 6px 6px 0; border-radius: 4px;
+  background: var(--papel); color: var(--negro);
+  box-shadow: 0 1px 0 rgba(255,255,255,.4) inset, 0 10px 22px rgba(0, 0, 40, .45);
+  transform: rotate(var(--giro));
+  transition: transform .25s cubic-bezier(.2, .8, .2, 1);
 }
+.cliente:nth-child(2) { --giro: 1.8deg; }
+.cliente:nth-child(3) { --giro: 1.4deg; }
+.cliente:nth-child(4) { --giro: -1.6deg; }
+.cliente:nth-child(5) { --giro: -2.4deg; }
+.cliente:nth-child(6) { --giro: 2deg; }
+.cliente:active { transform: rotate(0deg) scale(.97); }
+@media (hover: hover) { .cliente:hover { transform: rotate(0deg) translateY(-3px); } }
+/* Cinta amarilla que "pega" la foto */
+.cliente::before {
+  content: ""; position: absolute; z-index: 2; top: -7px; left: 50%;
+  width: 38%; height: 14px; transform: translateX(-50%) rotate(calc(var(--giro) * -1.6));
+  background: rgba(255, 226, 74, .82);
+}
+.cliente .foto { position: relative; flex: 1; min-height: 0; overflow: hidden; background: var(--cobalto-hondo); border-radius: 2px; }
 .cliente img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.cliente.contener img { object-fit: contain; padding: 14px; background: var(--papel); }
-.cliente span {
-  position: absolute; left: 0; right: 0; bottom: 0;
-  padding: 26px 10px 9px;
-  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .78));
-  font-size: .98rem; font-weight: 700; line-height: 1.1; color: #fff;
+.cliente.contener .foto { background: #fff; }
+.cliente.contener img { object-fit: contain; padding: 10px; }
+.cliente .pie { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; padding: 7px 2px 8px; }
+.cliente b { display: block; font-size: clamp(1rem, 4.6vw, 1.2rem); font-stretch: 75%; font-weight: 800; line-height: .95; }
+.cliente small { display: block; font-size: .74rem; font-weight: 500; color: var(--negro-suave); margin-top: 2px; }
+.cliente .abrir {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--cobalto); color: var(--papel);
 }
-.cliente span small { display: block; font-size: .78rem; font-weight: 500; opacity: .8; margin-top: 2px; }
+.cliente .abrir svg { width: 13px; height: 13px; }
+@media (prefers-reduced-motion: reduce) { .cliente { transition: none; } }
 
 /* ---------- 4. Precio (lo memorable) ---------- */
 .p-precio .que { font-size: 1.05rem; font-weight: 700; }
@@ -333,12 +357,12 @@ dialog.hoja[open] { animation: subir .32s cubic-bezier(.2, .8, .2, 1); }
         <button type="button" class="ver-demos" id="ver-demos">Ver demos</button>
       </div>
       <div class="mosaico">
-        <button type="button" class="cliente" data-cliente="barberia"><img src="img/barberia.webp" alt="" loading="lazy"><span>Barbería Vázquez<small>Lerdo</small></span></button>
-        <button type="button" class="cliente" data-cliente="compadres"><img src="img/compadres.webp" alt="" loading="lazy"><span>Los Compadres<small>Taquería</small></span></button>
-        <button type="button" class="cliente" data-cliente="milea"><img src="img/milea.webp" alt="" loading="lazy"><span>Milea Studio<small>Papelería</small></span></button>
-        <button type="button" class="cliente" data-cliente="kbhuates"><img src="img/kbhuates.webp" alt="" loading="lazy"><span>KB Huates<small>Botanas</small></span></button>
-        <button type="button" class="cliente" data-cliente="copa"><img src="img/copa.webp" alt="" loading="lazy" style="object-position:50% 0;transform:scale(1.4);transform-origin:50% 0"><span>Copa Zona Laguna<small>Torneo</small></span></button>
-        <button type="button" class="cliente contener" data-cliente="epad"><img src="img/epad.webp" alt="" loading="lazy"><span>EPAD<small>Educación</small></span></button>
+        <button type="button" class="cliente" data-cliente="barberia"><span class="foto"><img src="img/barberia.webp" alt="" loading="lazy"></span><span class="pie"><span><b>Barbería Vázquez</b><small>Lerdo</small></span><span class="abrir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span></button>
+        <button type="button" class="cliente" data-cliente="compadres"><span class="foto"><img src="img/compadres.webp" alt="" loading="lazy"></span><span class="pie"><span><b>Los Compadres</b><small>Taquería</small></span><span class="abrir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span></button>
+        <button type="button" class="cliente" data-cliente="milea"><span class="foto"><img src="img/milea.webp" alt="" loading="lazy"></span><span class="pie"><span><b>Milea Studio</b><small>Papelería</small></span><span class="abrir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span></button>
+        <button type="button" class="cliente" data-cliente="kbhuates"><span class="foto"><img src="img/kbhuates.webp" alt="" loading="lazy"></span><span class="pie"><span><b>KB Huates</b><small>Botanas</small></span><span class="abrir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span></button>
+        <button type="button" class="cliente" data-cliente="copa"><span class="foto"><img src="img/copa.webp" alt="" loading="lazy" style="object-position:50% 30%"></span><span class="pie"><span><b>Copa Zona Laguna</b><small>Torneo</small></span><span class="abrir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span></button>
+        <button type="button" class="cliente contener" data-cliente="epad"><span class="foto"><img src="img/epad.webp" alt="" loading="lazy"></span><span class="pie"><span><b>EPAD</b><small>Educación</small></span><span class="abrir" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg></span></span></button>
       </div>
     </section>
 
